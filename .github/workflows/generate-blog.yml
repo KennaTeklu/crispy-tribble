@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Fetch all history so rebase works
 
       - name: Combine blog post files
         run: |
@@ -32,9 +34,16 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add blog-posts.js
-          git diff --cached --quiet || git commit -m "Auto-generate blog-posts.js from blog-posts folder"
-          # Set remote URL with token to ensure push works
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-generate blog-posts.js from blog-posts folder"
+          fi
+          # Set remote with token
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push origin HEAD:${{ github.ref }}
+          # Pull latest changes with rebase to avoid conflicts
+          git pull --rebase origin main
+          # Push
+          git push origin HEAD:main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
