@@ -681,19 +681,17 @@
             loadPostList();
         }
 
-        // Router
         function router() {
             var path = window.location.pathname;
             var route = getPageFromPath(path);
             if (route === null) {
-                // Unknown route → go home
                 history.replaceState(null, '', '/');
                 route = 'home';
             }
-
+        
             setActiveNav(route === 'blog' ? 'blog' : route);
             showPage(route);
-
+        
             if (route === 'blog') {
                 var slug = path.split('/')[2];
                 if (slug) {
@@ -701,11 +699,11 @@
                 } else {
                     showBlogList();
                 }
-            } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-
-            // Save last view in Dexie (optional)
+        
+            // ✅ Always scroll to top – for ALL routes
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        
             _db.session.put({ key: 'lastView', value: path });
         }
 
