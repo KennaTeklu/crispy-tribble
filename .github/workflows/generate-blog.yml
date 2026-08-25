@@ -44,7 +44,11 @@ jobs:
           fi
           git commit -m "Auto-generate blog-posts.js from blog-posts folder"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git pull --rebase origin main
-          git push origin HEAD:main
+          for i in 1 2 3 4 5; do
+            git push origin HEAD:main && break
+            echo "Push rejected, rebasing (attempt $i)..."
+            git fetch origin main
+            git rebase origin/main
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
