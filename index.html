@@ -390,8 +390,7 @@
         </footer>
     </div>
 
-    <!-- ===== BLOG POST DATA ===== -->
-    <!-- All dates updated to 2026-08-24 (today) -->
+    <!-- ===== BLOG POST DATA – ALL DATES: 2026-08-24 ===== -->
     <script>
         window.blogPosts = window.blogPosts || [];
 
@@ -485,7 +484,7 @@
                 "<p>But even if you don't use a tool, the principle remains: stop memorizing lists, start mapping ideas. Your brain will thank you.</p>"
         });
 
-        // Blog post #4
+        // Blog post #4 – fixed quotes
         window.blogPosts.push({
             title: "How I Went from Drowning in Notes to Actually Enjoying the Process",
             date: "2026-08-24",
@@ -496,7 +495,7 @@
                 "<p>Last semester, I was staring at over 500 pages of medical notes. I had them organized in color-coded folders, but every time I opened one, my brain shut down. It felt like I was trying to drink from a fire hose.</p>" +
                 "<p>I knew the material was important, but I couldn't see how it all connected. Each topic seemed like an island, and I was hopping between them without a map.</p>" +
                 "<h2>The Turning Point</h2>" +
-                "<p>One day, I tried a different approach: instead of listing topics, I drew them as a web. I put "Cardiology" at the center and connected it to "Anatomy", "Pharmacology", "Pathology". Suddenly, I could see relationships I'd never noticed before. It felt like I was looking at a photograph of my knowledge.</p>" +
+                "<p>One day, I tried a different approach: instead of listing topics, I drew them as a web. I put \"Cardiology\" at the center and connected it to \"Anatomy\", \"Pharmacology\", \"Pathology\". Suddenly, I could see relationships I'd never noticed before. It felt like I was looking at a photograph of my knowledge.</p>" +
                 "<p>That experience got me wondering: could I turn my entire syllabus into one such map? A digital one that I could navigate with the click of a button?</p>" +
                 "<h2>Putting It into Practice</h2>" +
                 "<p>I found <a href='https://try4ever.com'>a tool that builds a 3D visualization from my notes</a> – each topic becomes a glowing node, and the connections are drawn for me. I could zoom out and see the whole landscape, or zoom in on a single topic. The red nodes showed me exactly where I was weak, and green ones showed my strengths. For the first time, I felt in control.</p>" +
@@ -611,7 +610,6 @@
         var _db = new Dexie('BrainSession');
         _db.version(1).stores({ session: 'key' });
 
-        // Show only the active page
         function showPage(pageId) {
             var pages = document.querySelectorAll('.page');
             pages.forEach(function(p) { p.classList.remove('active'); });
@@ -619,7 +617,6 @@
             if (target) target.classList.add('active');
         }
 
-        // Highlight active nav link
         function setActiveNav(route) {
             var navLinks = document.querySelectorAll('nav a[data-route]');
             navLinks.forEach(function(link) {
@@ -630,7 +627,6 @@
             });
         }
 
-        // Build blog list
         function loadPostList() {
             var posts = window.blogPosts || [];
             var list = document.getElementById('postList');
@@ -648,7 +644,6 @@
             });
         }
 
-        // Show a single post
         function renderPost(slug) {
             var posts = window.blogPosts || [];
             var post = posts.find(function(p) { return p.slug === slug; });
@@ -663,14 +658,12 @@
             document.getElementById('postList').style.display = 'none';
         }
 
-        // Show blog list (and hide individual post)
         function showBlogList() {
             document.getElementById('postList').style.display = '';
             document.getElementById('postDisplay').innerHTML = '';
             loadPostList();
         }
 
-        // Router
         function router() {
             var hash = window.location.hash || '#/';
             var path = hash.replace('#/', '').replace(/\/$/, '');
@@ -703,20 +696,15 @@
             }
         }
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            loadPostList(); // preload list (hidden, but ready)
-
+            loadPostList();
             window.addEventListener('hashchange', router);
-
             document.getElementById('homeLink').addEventListener('click', function(e) {
                 e.preventDefault();
                 window.location.hash = '#/';
             });
-
             router();
 
-            // Restore last view if hash is empty
             _db.session.get('lastView').then(function(rec) {
                 if (rec && rec.value && (window.location.hash === '' || window.location.hash === '#')) {
                     var val = rec.value;
