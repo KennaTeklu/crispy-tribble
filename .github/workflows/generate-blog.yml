@@ -1,0 +1,35 @@
+name: Generate blog-posts.js
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'blog-posts/**/*.js'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Combine blog post files
+        run: |
+          echo "// Auto-generated file - do not edit" > blog-posts.js
+          echo "window.blogPosts = window.blogPosts || [];" >> blog-posts.js
+          for file in blog-posts/*.js; do
+            echo "// $file" >> blog-posts.js
+            cat "$file" >> blog-posts.js
+            echo "" >> blog-posts.js
+          done
+
+      - name: Commit and push generated file
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add blog-posts.js
+          git commit -m "Auto-generate blog-posts.js from blog-posts folder" || exit 0
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
