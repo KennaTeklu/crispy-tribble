@@ -3,43 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brain – simple study tool</title>
+    <title>Brain – study tool</title>
+    <meta name="description" content="A simple offline tool for organizing study material. Works with any PDF. Try it free.">
+    <meta name="keywords" content="study, learning, medical students, MCAT, USMLE, productivity, visual learning">
+    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
     <style>
-        body { background: #0a0c12; color: #ddd; font-family: "Trebuchet MS", Arial, sans-serif; margin: 0; padding: 0; line-height: 1.6; position: relative; min-height: 100vh; }
-        #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
-        #network-bg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.25; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
-        header { border-bottom: 2px solid #2dd4bf; padding-bottom: 10px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-size: 28px; font-weight: bold; color: #2dd4bf; display: flex; align-items: center; gap: 8px; }
-        .logo svg { width: 32px; height: 32px; }
-        nav ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; }
-        nav a { color: #aaa; text-decoration: none; }
-        nav a:hover { color: #fff; }
-        .hero { text-align: center; margin-bottom: 40px; padding: 40px 0; }
-        .hero h1 { font-size: 36px; color: #fff; margin-bottom: 10px; }
-        .hero p { font-size: 18px; color: #94a3b8; max-width: 600px; margin: 0 auto 20px; }
-        .btn { display: inline-block; background: #2dd4bf; color: #000; padding: 12px 24px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+        * { box-sizing: border-box; }
+        body {
+            background: #0a0c12;
+            color: #ddd;
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+        }
+        #stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+        #network-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.25;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        header {
+            border-bottom: 2px solid #2dd4bf;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2dd4bf;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        header .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        nav li { display: inline; }
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: color .2s, background .2s;
+        }
+        nav a:hover {
+            color: #fff;
+            background: #2dd4bf22;
+        }
+        nav a.active {
+            color: #fff;
+            background: #2dd4bf33;
+            border-bottom: 2px solid #2dd4bf;
+        }
+        nav a.open-app {
+            background: #2dd4bf;
+            color: #000;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 4px;
+        }
+        nav a.open-app:hover {
+            background: #14b8a6;
+            color: #000;
+        }
+        .page {
+            display: none;
+            animation: fadeIn .3s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero {
+            text-align: left;
+            margin-bottom: 50px;
+        }
+        .hero h1 {
+            font-size: 40px;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #aaa;
+            max-width: 600px;
+        }
+        .btn {
+            display: inline-block;
+            background: #2dd4bf;
+            color: #000;
+            padding: 12px 24px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: background .2s;
+        }
         .btn:hover { background: #14b8a6; }
-        .about { margin-bottom: 40px; }
-        .about h2 { color: #fff; border-bottom: 2px solid #2dd4bf; padding-bottom: 8px; display: inline-block; }
-        .more-toggle { background: transparent; border: 1px solid #444; color: #ddd; padding: 8px 16px; cursor: pointer; font-size: 16px; border-radius: 4px; margin-bottom: 20px; }
-        .more-toggle:hover { border-color: #2dd4bf; color: #2dd4bf; }
-        .more-content { display: none; border-left: 2px solid #444; padding-left: 20px; margin-top: 10px; }
-        .more-content.open { display: block; }
-        .blog-section h3 { color: #2dd4bf; }
-        .post-list { list-style: none; padding: 0; }
-        .post-list li { border-bottom: 1px solid #333; padding: 10px 0; }
-        .post-list a { color: #ddd; text-decoration: none; font-weight: bold; }
+        .section {
+            margin-bottom: 50px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 30px;
+        }
+        .section:last-of-type { border-bottom: none; }
+        .section h2 {
+            color: #fff;
+            border-bottom: 2px solid #2dd4bf;
+            padding-bottom: 8px;
+            display: inline-block;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .how-steps { margin-top: 20px; }
+        .how-steps .step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        .how-steps .step-num {
+            background: #2dd4bf;
+            color: #000;
+            font-weight: bold;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .feature {
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            background-color: #222;
+            transition: border-color .2s;
+        }
+        .feature:hover { border-color: #2dd4bf; }
+        .feature h3 {
+            color: #2dd4bf;
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .feature p {
+            font-size: 13px;
+            color: #bbb;
+            margin-bottom: 0;
+        }
+        .faq-item { margin-bottom: 12px; }
+        .faq-item strong { color: #ddd; }
+        .faq-item p {
+            margin: 4px 0 0;
+            color: #aaa;
+            font-size: 14px;
+        }
+        .post-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .post-list li {
+            border-bottom: 1px solid #333;
+            padding: 14px 0;
+        }
+        .post-list a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            display: block;
+        }
         .post-list a:hover { color: #2dd4bf; }
-        .post-excerpt { font-size: 14px; color: #888; margin-top: 4px; }
-        .post-meta { font-size: 12px; color: #666; }
-        .post-content { background: #222; border: 1px solid #333; border-radius: 6px; padding: 20px; margin-top: 20px; }
-        .post-content h2 { color: #fff; }
+        .post-excerpt {
+            font-size: 14px;
+            color: #888;
+            margin-top: 4px;
+        }
+        .post-meta {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        .post-content {
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .post-content h2 {
+            color: #fff;
+            border-bottom: none;
+        }
         .post-content a { color: #2dd4bf; }
-        footer { border-top: 1px solid #444; padding-top: 20px; text-align: center; font-size: 13px; color: #777; margin-top: 40px; }
-        footer a { color: #2dd4bf; text-decoration: none; }
-        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .fade-in.active { opacity: 1; transform: translateY(0); }
+        .post-content p { margin-bottom: 12px; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 10px;
+            color: #2dd4bf;
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .no-posts {
+            color: #888;
+            font-style: italic;
+            padding: 20px 0;
+        }
+        /* Custom 404 page styles */
+        #page-404 {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        #page-404 h1 {
+            font-size: 72px;
+            color: #2dd4bf;
+            margin: 0;
+        }
+        #page-404 p {
+            font-size: 22px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+        #page-404 a.btn { margin-top: 30px; }
+        footer {
+            border-top: 1px solid #444;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+            margin-top: 40px;
+        }
+        footer a {
+            color: #2dd4bf;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 28px; }
+            .features { grid-template-columns: 1fr; }
+            nav ul { gap: 4px; }
+            nav a { font-size: 13px; padding: 3px 6px; }
+        }
     </style>
 </head>
 <body>
@@ -68,7 +324,7 @@
 
     <div class="container">
         <header>
-            <div class="logo">
+            <a href="/" class="logo" id="homeLink">
                 <svg viewBox="0 0 32 32">
                     <circle cx="16" cy="16" r="6" fill="#2dd4bf"/>
                     <circle cx="6" cy="10" r="4" fill="#e11d48"/>
@@ -79,86 +335,257 @@
                     <line x1="6" y1="10" x2="10" y2="26" stroke="white" stroke-width="0.5" opacity="0.5"/>
                 </svg>
                 <span>Brain</span>
-            </div>
+            </a>
             <nav>
                 <ul>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/blog">Blog</a></li>
-                    <li><a href="https://brain.try4ever.com" target="_blank"><strong>Open App</strong></a></li>
+                    <li><a href="/how" data-route="how">How</a></li>
+                    <li><a href="/features" data-route="features">Features</a></li>
+                    <li><a href="/about" data-route="about">About</a></li>
+                    <li><a href="/faq" data-route="faq">FAQ</a></li>
+                    <li><a href="/blog" data-route="blog">Blog</a></li>
+                    <li><a href="https://brain.try4ever.com" class="open-app" target="_blank">Open App</a></li>
                 </ul>
             </nav>
         </header>
 
-        <div class="hero fade-in">
-            <h1>Your notes, mapped.</h1>
-            <p>Upload any PDF or notes, and Brain turns them into a visual map. No cloud, no tracking. It's just a tool.</p>
-            <a class="btn" href="https://brain.try4ever.com" target="_blank">Try it</a>
-        </div>
-
-        <div class="about fade-in" id="about">
-            <h2>About</h2>
-            <p>I made this because I needed a better way to organize my own studies. It works offline and keeps your data private.</p>
-        </div>
-
-        <button class="more-toggle fade-in" id="more-toggle">More</button>
-        <div class="more-content" id="more-content">
-            <div class="blog-section">
-                <h3>Blog</h3>
-                <ul class="post-list fade-in" id="post-list"></ul>
-                <div id="post-display"></div>
+        <!-- HOME -->
+        <div id="page-home" class="page active">
+            <div class="hero">
+                <h1>Your notes, turned into a map you can actually see.</h1>
+                <p>I built this because I got tired of staring at outlines. Drop in your PDF, textbook, or syllabus. Brain turns it into a 3D starfield of topics. As you learn, the stars change color from red to green.</p>
+                <a class="btn" href="https://brain.try4ever.com" target="_blank">Try it</a>
             </div>
         </div>
 
-        <footer class="fade-in">
-            <p>© 2026 Brain. All rights reserved. | Landing page at <a href="https://try4ever.com">try4ever.com</a> · App at <a href="https://brain.try4ever.com">brain.try4ever.com</a></p>
+        <!-- HOW -->
+        <div id="page-how" class="page">
+            <div class="section">
+                <h2>How it works</h2>
+                <div class="how-steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div>Upload a file (PDF, DOCX, TXT, EPUB).</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div>The structure is extracted and shown as a 3D graph.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div>You study, take quizzes, and each node tracks your understanding.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FEATURES -->
+        <div id="page-features" class="page">
+            <div class="section">
+                <h2>Features</h2>
+                <div class="features">
+                    <div class="feature">
+                        <h3>🌌 3D layout</h3>
+                        <p>See how everything connects. Rotate, zoom, wander around your knowledge.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>🎨 Color‑coded mastery</h3>
+                        <p>Red means "I don't know", green means "got it". It's a progress bar in space.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>📝 Quizzes &amp; blanks</h3>
+                        <p>Generate questions from your content and test yourself. No AI required – you can use any tool or just write them yourself.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT -->
+        <div id="page-about" class="page">
+            <div class="section">
+                <h2>About</h2>
+                <p>I made this because I needed a better way to organize my own studies. It works offline and keeps your data private.</p>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div id="page-faq" class="page">
+            <div class="section">
+                <h2>FAQ</h2>
+                <div class="faq-item">
+                    <strong>Is this for a specific exam?</strong>
+                    <p>No – works for anything: USMLE, MCAT, history, programming, whatever.</p>
+                </div>
+                <div class="faq-item">
+                    <strong>Is my data safe?</strong>
+                    <p>Everything is stored in your browser. No cloud, no tracking.</p>
+                </div>
+                <div class="faq-item">
+                    <strong>Is it free?</strong>
+                    <p>There's a 7‑day trial. After that, it's $19/month if you find it useful.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOG -->
+        <div id="page-blog" class="page">
+            <div class="section">
+                <h2>Blog</h2>
+                <ul class="post-list" id="postList"></ul>
+                <div id="postDisplay"></div>
+            </div>
+        </div>
+
+        <!-- CUSTOM 404 PAGE -->
+        <div id="page-404" class="page">
+            <h1>Uh oh!</h1>
+            <p>That page drifted off into space.</p>
+            <a class="btn" href="/">Take me home</a>
+        </div>
+
+        <footer>
+            <p>© 2026 Brain. All rights reserved. | Hosted at <a href="https://brain.try4ever.com" target="_blank">brain.try4ever.com</a></p>
         </footer>
     </div>
 
     <script src="blog-posts.js"></script>
     <script>
-        // More toggle
-        var moreBtn = document.getElementById('more-toggle');
-        var moreContent = document.getElementById('more-content');
-        moreBtn.addEventListener('click', function() {
-            moreContent.classList.toggle('open');
-        });
+        var _db = new Dexie('BrainSession');
+        _db.version(1).stores({ session: 'key' });
 
-        // Load blog posts from window.blogPosts (populated by blog-posts.js)
-        document.addEventListener('DOMContentLoaded', function() {
+        // Helper to get page from path
+        function getPageFromPath(path) {
+            if (path === '/' || path === '') return 'home';
+            if (path === '/how') return 'how';
+            if (path === '/features') return 'features';
+            if (path === '/about') return 'about';
+            if (path === '/faq') return 'faq';
+            if (path === '/blog') return 'blog';
+            if (path.startsWith('/blog/')) return 'blog';
+            return '404';
+        }
+
+        // Show a specific page (hide others)
+        function showPage(pageId) {
+            var pages = document.querySelectorAll('.page');
+            pages.forEach(function(p) { p.classList.remove('active'); });
+            var target = document.getElementById('page-' + pageId);
+            if (target) target.classList.add('active');
+        }
+
+        // Highlight active nav link
+        function setActiveNav(route) {
+            var navLinks = document.querySelectorAll('nav a[data-route]');
+            navLinks.forEach(function(link) {
+                link.classList.remove('active');
+                if (link.getAttribute('data-route') === route) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Load blog list
+        function loadPostList() {
             var posts = window.blogPosts || [];
-            var list = document.getElementById('post-list');
+            var list = document.getElementById('postList');
             list.innerHTML = '';
-            posts.forEach(function(post) {
+            if (posts.length === 0) {
+                list.innerHTML = '<div class="no-posts">No blog posts yet.</div>';
+                return;
+            }
+            posts.forEach(function(p) {
                 var li = document.createElement('li');
-                li.innerHTML = '<a href="/blog/' + post.slug + '">' + post.title + '</a>' +
-                    '<div class="post-meta">' + post.date + ' · ' + post.tags.join(', ') + '</div>' +
-                    '<div class="post-excerpt">' + post.excerpt + '</div>';
+                li.innerHTML = '<a href="/blog/' + p.slug + '">' + p.title + '</a>' +
+                    '<div class="post-meta">' + p.date + ' · ' + p.tags.join(', ') + '</div>' +
+                    '<div class="post-excerpt">' + p.excerpt + '</div>';
                 list.appendChild(li);
             });
+        }
 
-            // If the page loads with #blog (from old links), open More section
-            if (window.location.hash === '#blog') {
-                moreContent.classList.add('open');
+        // Render a single blog post
+        function renderPost(slug) {
+            var posts = window.blogPosts || [];
+            var post = posts.find(function(p) { return p.slug === slug; });
+            if (!post) {
+                document.getElementById('postDisplay').innerHTML = '<div class="no-posts">Post not found.</div>';
+                return;
+            }
+            var display = document.getElementById('postDisplay');
+            display.innerHTML = '<a href="/blog" class="back-link">← Back to blog list</a>' +
+                '<div class="post-content"><h2>' + post.title + '</h2>' +
+                '<p><em>' + post.date + '</em></p>' + post.body + '</div>';
+            document.getElementById('postList').style.display = 'none';
+        }
+
+        // Show blog list
+        function showBlogList() {
+            document.getElementById('postList').style.display = '';
+            document.getElementById('postDisplay').innerHTML = '';
+            loadPostList();
+        }
+
+        // Router
+        function router() {
+            var path = window.location.pathname;
+            var route = getPageFromPath(path);
+
+            if (route === '404') {
+                showPage('404');
+                setActiveNav(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                _db.session.put({ key: 'lastView', value: path });
+                return;
+            }
+
+            setActiveNav(route === 'blog' ? 'blog' : route);
+            showPage(route);
+
+            if (route === 'blog') {
+                var slug = path.split('/')[2];
+                if (slug) {
+                    renderPost(slug);
+                } else {
+                    showBlogList();
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            _db.session.put({ key: 'lastView', value: path });
+        }
+
+        // Intercept internal links (use pushState)
+        document.addEventListener('click', function(e) {
+            var link = e.target.closest('a');
+            if (!link) return;
+            var href = link.getAttribute('href');
+            if (!href || href.startsWith('http') || href.startsWith('https')) return;
+            if (href.startsWith('/') && !href.startsWith('//')) {
+                e.preventDefault();
+                history.pushState(null, '', href);
+                router();
             }
         });
 
-        // Scroll animation – toggle active on enter/exit
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                } else {
-                    entry.target.classList.remove('active');
-                }
+        // Handle back/forward
+        window.addEventListener('popstate', router);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPostList();
+            router();
+
+            document.getElementById('homeLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                history.pushState(null, '', '/');
+                router();
             });
-        }, { threshold: 0.1 });
 
-        function observeFadeIn(el) {
-            if (el) observer.observe(el);
-        }
-
-        document.querySelectorAll('.fade-in').forEach(function(el) {
-            observeFadeIn(el);
+            _db.session.get('lastView').then(function(rec) {
+                if (rec && rec.value && (window.location.pathname === '/' || window.location.pathname === '')) {
+                    // Optional: auto-redirect to last visited page
+                    // history.pushState(null, '', rec.value);
+                    // router();
+                }
+            }).catch(function() {});
         });
 
         // Starfield
@@ -175,7 +602,6 @@
                 twinkle: Math.random() * 0.5 + 0.2
             });
         }
-
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             stars.forEach(function(star) {
@@ -186,9 +612,7 @@
             });
             requestAnimationFrame(draw);
         }
-
         draw();
-
         window.addEventListener('resize', function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
