@@ -8,14 +8,14 @@ on:
       - 'blog-posts/**/*.js'
 
 permissions:
-  contents: write   # Grants write access to the repository
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Combine blog post files
         run: |
@@ -32,7 +32,9 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add blog-posts.js
-          git commit -m "Auto-generate blog-posts.js from blog-posts folder" || exit 0
-          git push
+          git diff --cached --quiet || git commit -m "Auto-generate blog-posts.js from blog-posts folder"
+          # Set remote URL with token to ensure push works
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push origin HEAD:${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
