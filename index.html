@@ -82,8 +82,8 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#" id="more-link">More</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/blog">Blog</a></li>
                     <li><a href="https://brain.try4ever.com" target="_blank"><strong>Open App</strong></a></li>
                 </ul>
             </nav>
@@ -130,19 +130,16 @@
             list.innerHTML = '';
             posts.forEach(function(post) {
                 var li = document.createElement('li');
-                li.innerHTML = '<a href="#" data-slug="' + post.slug + '">' + post.title + '</a>' +
+                li.innerHTML = '<a href="/blog/' + post.slug + '">' + post.title + '</a>' +
                     '<div class="post-meta">' + post.date + ' · ' + post.tags.join(', ') + '</div>' +
                     '<div class="post-excerpt">' + post.excerpt + '</div>';
-                li.querySelector('a').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var display = document.getElementById('post-display');
-                    display.innerHTML = '<div class="post-content fade-in"><h2>' + post.title + '</h2>' +
-                        '<p><em>' + post.date + '</em></p>' + post.body + '</div>';
-                    observeFadeIn(display.querySelector('.post-content'));
-                    display.scrollIntoView({ behavior: 'smooth' });
-                });
                 list.appendChild(li);
             });
+
+            // If the page loads with #blog (from old links), open More section
+            if (window.location.hash === '#blog') {
+                moreContent.classList.add('open');
+            }
         });
 
         // Scroll animation – toggle active on enter/exit
