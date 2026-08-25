@@ -1,116 +1,47 @@
 <!DOCTYPE html>
-<!--
-    ============================================================
-    ARCHITECTURE (CRITICAL – READ ME)
-    ============================================================
-    • try4ever.com      → This landing page (marketing, funnel, blogs)
-    • brain.try4ever.com → The actual app (the 3D knowledge map)
-
-    This page is part of the landing site. It handles unknown URLs.
-    If a path matches a blog slug, it redirects to the blog post.
-    Otherwise, it shows a friendly error. All app links point to
-    brain.try4ever.com.
-    ============================================================
--->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found – Brain</title>
+    <title>Brain – simple study tool</title>
     <style>
-        body {
-            background: #0a0c12;
-            color: #ddd;
-            font-family: "Trebuchet MS", Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            position: relative;
-            min-height: 100vh;
-        }
-        #stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            pointer-events: none;
-        }
-        #network-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.25;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding-top: 60px;
-        }
-        h1 {
-            font-size: 48px;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-        p {
-            font-size: 18px;
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-        .btn {
-            display: inline-block;
-            background: #2dd4bf;
-            color: #000;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 10px;
-        }
-        .btn:hover {
-            background: #14b8a6;
-        }
-        .search-box {
-            margin-top: 30px;
-        }
-        input[type="text"] {
-            padding: 12px 20px;
-            border: 1px solid #444;
-            border-radius: 5px;
-            background: #222;
-            color: #ddd;
-            font-size: 16px;
-            width: 80%;
-            max-width: 400px;
-        }
-        .search-hint {
-            font-size: 14px;
-            color: #777;
-            margin-top: 10px;
-        }
-        footer {
-            border-top: 1px solid #444;
-            padding-top: 20px;
-            text-align: center;
-            font-size: 13px;
-            color: #777;
-            margin-top: 40px;
-        }
-        footer a {
-            color: #2dd4bf;
-            text-decoration: none;
-        }
+        body { background: #0a0c12; color: #ddd; font-family: "Trebuchet MS", Arial, sans-serif; margin: 0; padding: 0; line-height: 1.6; position: relative; min-height: 100vh; }
+        #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+        #network-bg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.25; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        header { border-bottom: 2px solid #2dd4bf; padding-bottom: 10px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 28px; font-weight: bold; color: #2dd4bf; display: flex; align-items: center; gap: 8px; }
+        .logo svg { width: 32px; height: 32px; }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; }
+        nav a { color: #aaa; text-decoration: none; }
+        nav a:hover { color: #fff; }
+        .hero { text-align: center; margin-bottom: 40px; padding: 40px 0; }
+        .hero h1 { font-size: 36px; color: #fff; margin-bottom: 10px; }
+        .hero p { font-size: 18px; color: #94a3b8; max-width: 600px; margin: 0 auto 20px; }
+        .btn { display: inline-block; background: #2dd4bf; color: #000; padding: 12px 24px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+        .btn:hover { background: #14b8a6; }
+        .about { margin-bottom: 40px; }
+        .about h2 { color: #fff; border-bottom: 2px solid #2dd4bf; padding-bottom: 8px; display: inline-block; }
+        .more-toggle { background: transparent; border: 1px solid #444; color: #ddd; padding: 8px 16px; cursor: pointer; font-size: 16px; border-radius: 4px; margin-bottom: 20px; }
+        .more-toggle:hover { border-color: #2dd4bf; color: #2dd4bf; }
+        .more-content { display: none; border-left: 2px solid #444; padding-left: 20px; margin-top: 10px; }
+        .more-content.open { display: block; }
+        .blog-section h3 { color: #2dd4bf; }
+        .post-list { list-style: none; padding: 0; }
+        .post-list li { border-bottom: 1px solid #333; padding: 10px 0; }
+        .post-list a { color: #ddd; text-decoration: none; font-weight: bold; }
+        .post-list a:hover { color: #2dd4bf; }
+        .post-excerpt { font-size: 14px; color: #888; margin-top: 4px; }
+        .post-meta { font-size: 12px; color: #666; }
+        .post-content { background: #222; border: 1px solid #333; border-radius: 6px; padding: 20px; margin-top: 20px; }
+        .post-content h2 { color: #fff; }
+        .post-content a { color: #2dd4bf; }
+        .not-found { text-align: center; padding: 60px 20px; color: #94a3b8; display: none; }
+        .not-found h1 { font-size: 48px; color: #fff; }
+        footer { border-top: 1px solid #444; padding-top: 20px; text-align: center; font-size: 13px; color: #777; margin-top: 40px; }
+        footer a { color: #2dd4bf; text-decoration: none; }
+        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in.active { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -138,22 +69,160 @@
     </div>
 
     <div class="container">
-        <h1>404</h1>
-        <p>This page drifted away. But your knowledge map is still here.</p>
-        <a href="/" class="btn">Go Home</a>
-        <a href="/#blog" class="btn">Read Blog</a>
+        <header>
+            <div class="logo">
+                <svg viewBox="0 0 32 32">
+                    <circle cx="16" cy="16" r="6" fill="#2dd4bf"/>
+                    <circle cx="6" cy="10" r="4" fill="#e11d48"/>
+                    <circle cx="26" cy="8" r="4" fill="#eab308"/>
+                    <circle cx="10" cy="26" r="3" fill="#2dd4bf"/>
+                    <line x1="16" y1="16" x2="6" y2="10" stroke="white" stroke-width="0.5" opacity="0.5"/>
+                    <line x1="16" y1="16" x2="26" y2="8" stroke="white" stroke-width="0.5" opacity="0.5"/>
+                    <line x1="6" y1="10" x2="10" y2="26" stroke="white" stroke-width="0.5" opacity="0.5"/>
+                </svg>
+                <span>Brain</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="https://brain.try4ever.com" target="_blank"><strong>Open App</strong></a></li>
+                </ul>
+            </nav>
+        </header>
 
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Search for a topic...">
-            <div class="search-hint">Type a blog slug (e.g., 'spatial-memory-power') and press Enter.</div>
+        <div class="hero fade-in" id="hero">
+            <h1>Your notes, mapped.</h1>
+            <p>Upload any PDF or notes, and Brain turns them into a visual map. No cloud, no tracking. It's just a tool.</p>
+            <a class="btn" href="https://brain.try4ever.com" target="_blank">Try it</a>
         </div>
 
-        <footer>
+        <div class="about fade-in" id="about">
+            <h2>About</h2>
+            <p>I made this because I needed a better way to organize my own studies. It works offline and keeps your data private.</p>
+        </div>
+
+        <button class="more-toggle fade-in" id="more-toggle">More</button>
+        <div class="more-content" id="more-content">
+            <div class="blog-section">
+                <h3>Blog</h3>
+                <ul class="post-list fade-in" id="post-list"></ul>
+                <div id="post-display"></div>
+            </div>
+        </div>
+
+        <div class="not-found" id="not-found">
+            <h1>404</h1>
+            <p>This page drifted away. But your knowledge map is still here.</p>
+            <a class="btn" href="/">Go Home</a>
+        </div>
+
+        <footer class="fade-in">
             <p>© 2026 Brain. All rights reserved. | Landing page at <a href="https://try4ever.com">try4ever.com</a> · App at <a href="https://brain.try4ever.com">brain.try4ever.com</a></p>
         </footer>
     </div>
 
+    <script src="blog-posts.js"></script>
     <script>
+        // ====== UNIVERSAL PATH ROUTER ======
+        window.addEventListener('DOMContentLoaded', function() {
+            var path = window.location.pathname.toLowerCase();
+            var slug = path.replace(/^\/+|\/+$/g, ''); // remove slashes
+
+            // 1. Root or index.html – default (should not happen on 404 page, but safe)
+            if (slug === '' || slug === 'index.html') {
+                return;
+            }
+
+            // 2. /blog – open blog section
+            if (slug === 'blog') {
+                openBlogSection();
+                return;
+            }
+
+            // 3. /blog/<slug> or /<slug> – find post
+            var posts = window.blogPosts || [];
+            var post = null;
+            if (slug.startsWith('blog/')) {
+                var postSlug = slug.substring(5);
+                post = posts.find(function(p) { return p.slug === postSlug; });
+            } else {
+                post = posts.find(function(p) { return p.slug === slug; });
+            }
+
+            if (post) {
+                showPost(post);
+                return;
+            }
+
+            // 4. If path matches an element ID (e.g., 'about')
+            var element = document.getElementById(slug);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            // 5. Unknown – show 404 block
+            document.getElementById('hero').style.display = 'none';
+            document.getElementById('about').style.display = 'none';
+            document.getElementById('more-toggle').style.display = 'none';
+            document.getElementById('more-content').style.display = 'none';
+            document.getElementById('not-found').style.display = 'block';
+        });
+
+        function openBlogSection() {
+            document.getElementById('more-content').classList.add('open');
+            document.getElementById('more-content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showPost(post) {
+            openBlogSection();
+            var display = document.getElementById('post-display');
+            display.innerHTML = '<div class="post-content"><h2>' + post.title + '</h2>' +
+                '<p><em>' + post.date + '</em></p>' + post.body + '</div>';
+            display.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // More toggle (for manual clicks)
+        var moreBtn = document.getElementById('more-toggle');
+        var moreContent = document.getElementById('more-content');
+        moreBtn.addEventListener('click', function() {
+            moreContent.classList.toggle('open');
+        });
+
+        // Populate blog list (in case of /blog)
+        document.addEventListener('DOMContentLoaded', function() {
+            var posts = window.blogPosts || [];
+            var list = document.getElementById('post-list');
+            list.innerHTML = '';
+            posts.forEach(function(post) {
+                var li = document.createElement('li');
+                li.innerHTML = '<a href="/blog/' + post.slug + '">' + post.title + '</a>' +
+                    '<div class="post-meta">' + post.date + ' · ' + post.tags.join(', ') + '</div>' +
+                    '<div class="post-excerpt">' + post.excerpt + '</div>';
+                list.appendChild(li);
+            });
+        });
+
+        // Scroll animation (same as index)
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        function observeFadeIn(el) {
+            if (el) observer.observe(el);
+        }
+
+        document.querySelectorAll('.fade-in').forEach(function(el) {
+            observeFadeIn(el);
+        });
+
         // Starfield
         var canvas = document.getElementById('stars');
         var ctx = canvas.getContext('2d');
@@ -185,47 +254,6 @@
         window.addEventListener('resize', function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-        });
-
-        // Load blog posts (must be included exactly as in index.html)
-        window.blogPosts = window.blogPosts || [];
-        // Insert all 8 blog posts here (same as in index.html)
-        // To save space, I'm referencing that they need to be included.
-        // For completeness, please paste the same blog post script blocks here.
-        // (They are identical to the ones in index.html, but I'll list them in the final response.)
-    </script>
-
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            var path = window.location.pathname.toLowerCase();
-            var slug = path.replace(/^\/+|\/+$/g, '');
-            if (slug.length > 0) {
-                var posts = window.blogPosts;
-                var found = posts.find(function(p) {
-                    return p.slug.toLowerCase() === slug;
-                });
-                if (found) {
-                    window.location.href = '/' + '#blog/' + found.slug;
-                }
-            }
-
-            var searchInput = document.getElementById('search');
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    var input = searchInput.value.trim().toLowerCase();
-                    if (input.length > 0) {
-                        var posts = window.blogPosts;
-                        var found = posts.find(function(p) {
-                            return p.slug.toLowerCase() === input || p.title.toLowerCase().includes(input);
-                        });
-                        if (found) {
-                            window.location.href = '/' + '#blog/' + found.slug;
-                        } else {
-                            alert('No matching blog post found for "' + input + '".');
-                        }
-                    }
-                }
-            });
         });
     </script>
 </body>
