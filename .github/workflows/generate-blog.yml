@@ -10,20 +10,22 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: blog-posts-build
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # Fetch all history so rebase works
+      - uses: actions/checkout@v4
 
       - name: Combine blog post files
         run: |
           echo "// Auto-generated file - do not edit" > blog-posts.js
           echo "window.blogPosts = window.blogPosts || [];" >> blog-posts.js
           for file in blog-posts/*.js; do
+            node -c "$file" || { echo "::error file=$file::Syntax error, aborting"; exit 1; }
             echo "// $file" >> blog-posts.js
             cat "$file" >> blog-posts.js
             echo "" >> blog-posts.js
@@ -34,16 +36,6 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add blog-posts.js
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Auto-generate blog-posts.js from blog-posts folder"
-          fi
-          # Set remote with token
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          # Pull latest changes with rebase to avoid conflicts
-          git pull --rebase origin main
-          # Push
-          git push origin HEAD:main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git diff --cached --quiet && exit 0
+          git commit -m "Auto-generate blog-posts.js"
+          git push origin HEAD:main || { git fetch origin main && git rebase origin/main && git push origin HEAD:main; }
