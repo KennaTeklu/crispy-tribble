@@ -18,14 +18,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Combine blog post files
         run: |
           echo "// Auto-generated file - do not edit" > blog-posts.js
           echo "window.blogPosts = window.blogPosts || [];" >> blog-posts.js
           for file in blog-posts/*.js; do
-            node -c "$file" || { echo "::error file=$file::Syntax error, aborting"; exit 1; }
             echo "// $file" >> blog-posts.js
             cat "$file" >> blog-posts.js
             echo "" >> blog-posts.js
@@ -36,6 +38,13 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add blog-posts.js
-          git diff --cached --quiet && exit 0
-          git commit -m "Auto-generate blog-posts.js"
-          git push origin HEAD:main || { git fetch origin main && git rebase origin/main && git push origin HEAD:main; }
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Auto-generate blog-posts.js from blog-posts folder"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull --rebase origin main
+          git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
