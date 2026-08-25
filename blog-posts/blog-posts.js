@@ -1,6 +1,6 @@
 // Auto-generated file - do not edit
 window.blogPosts = window.blogPosts || [];
-
+ 
 // Blog post #1
 window.blogPosts.push({
     title: "The Untapped Power of Spatial Memory: How Your Brain Navigates Knowledge",
