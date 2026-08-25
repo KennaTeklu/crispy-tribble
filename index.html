@@ -285,14 +285,14 @@
 <body>
     <div class="container">
         <header>
-            <a href="#/" class="logo" id="homeLink">🧠 Brain</a>
+            <a href="/" class="logo" id="homeLink">🧠 Brain</a>
             <nav>
                 <ul>
-                    <li><a href="#/how" data-route="how">How</a></li>
-                    <li><a href="#/features" data-route="features">Features</a></li>
-                    <li><a href="#/about" data-route="about">About</a></li>
-                    <li><a href="#/faq" data-route="faq">FAQ</a></li>
-                    <li><a href="#/blog" data-route="blog">Blog</a></li>
+                    <li><a href="/how" data-route="how">How</a></li>
+                    <li><a href="/features" data-route="features">Features</a></li>
+                    <li><a href="/about" data-route="about">About</a></li>
+                    <li><a href="/faq" data-route="faq">FAQ</a></li>
+                    <li><a href="/blog" data-route="blog">Blog</a></li>
                     <li><a href="https://brain.try4ever.com" class="open-app" target="_blank">Open App</a></li>
                 </ul>
             </nav>
@@ -605,11 +605,24 @@
         });
     </script>
 
-    <!-- ===== ROUTER & SESSION MEMORY ===== -->
+    <!-- ===== CLEAN URL ROUTER ===== -->
     <script>
         var _db = new Dexie('BrainSession');
         _db.version(1).stores({ session: 'key' });
 
+        // Map path to page id
+        function getPageFromPath(path) {
+            if (path === '/' || path === '') return 'home';
+            if (path === '/how') return 'how';
+            if (path === '/features') return 'features';
+            if (path === '/about') return 'about';
+            if (path === '/faq') return 'faq';
+            if (path === '/blog') return 'blog';
+            if (path.startsWith('/blog/')) return 'blog';
+            return null; // unknown
+        }
+
+        // Show only the active page
         function showPage(pageId) {
             var pages = document.querySelectorAll('.page');
             pages.forEach(function(p) { p.classList.remove('active'); });
@@ -617,6 +630,7 @@
             if (target) target.classList.add('active');
         }
 
+        // Highlight active nav link
         function setActiveNav(route) {
             var navLinks = document.querySelectorAll('nav a[data-route]');
             navLinks.forEach(function(link) {
@@ -627,6 +641,7 @@
             });
         }
 
+        // Build blog list
         function loadPostList() {
             var posts = window.blogPosts || [];
             var list = document.getElementById('postList');
@@ -637,13 +652,14 @@
             }
             posts.forEach(function(p) {
                 var li = document.createElement('li');
-                li.innerHTML = '<a href="#/blog/' + p.slug + '">' + p.title + '</a>' +
+                li.innerHTML = '<a href="/blog/' + p.slug + '">' + p.title + '</a>' +
                     '<div class="post-meta">' + p.date + ' · ' + p.tags.join(', ') + '</div>' +
                     '<div class="post-excerpt">' + p.excerpt + '</div>';
                 list.appendChild(li);
             });
         }
 
+        // Show a single post
         function renderPost(slug) {
             var posts = window.blogPosts || [];
             var post = posts.find(function(p) { return p.slug === slug; });
@@ -652,63 +668,80 @@
                 return;
             }
             var display = document.getElementById('postDisplay');
-            display.innerHTML = '<a href="#/blog" class="back-link">← Back to blog list</a>' +
+            display.innerHTML = '<a href="/blog" class="back-link">← Back to blog list</a>' +
                 '<div class="post-content"><h2>' + post.title + '</h2>' +
                 '<p><em>' + post.date + '</em></p>' + post.body + '</div>';
             document.getElementById('postList').style.display = 'none';
         }
 
+        // Show blog list (and hide individual post)
         function showBlogList() {
             document.getElementById('postList').style.display = '';
             document.getElementById('postDisplay').innerHTML = '';
             loadPostList();
         }
 
+        // Router
         function router() {
-            var hash = window.location.hash || '#/';
-            var path = hash.replace('#/', '').replace(/\/$/, '');
-            var parts = path.split('/');
-            var route = parts[0] || 'home';
-
-            setActiveNav(route);
-
-            if (route === 'blog' && parts.length > 1) {
-                showPage('blog');
-                renderPost(parts[1]);
-                _db.session.put({ key: 'lastView', value: 'blog/' + parts[1] });
-            } else if (route === 'blog') {
-                showPage('blog');
-                showBlogList();
-                _db.session.put({ key: 'lastView', value: 'blog' });
-            } else if (route === 'home') {
-                showPage('home');
-                _db.session.put({ key: 'lastView', value: 'home' });
-            } else if (['how', 'features', 'about', 'faq'].includes(route)) {
-                showPage(route);
-                _db.session.put({ key: 'lastView', value: route });
-            } else {
-                showPage('home');
-                _db.session.put({ key: 'lastView', value: 'home' });
+            var path = window.location.pathname;
+            var route = getPageFromPath(path);
+            if (route === null) {
+                // Unknown route → go home
+                history.replaceState(null, '', '/');
+                route = 'home';
             }
 
-            if (route !== 'blog') {
+            setActiveNav(route === 'blog' ? 'blog' : route);
+            showPage(route);
+
+            if (route === 'blog') {
+                var slug = path.split('/')[2];
+                if (slug) {
+                    renderPost(slug);
+                } else {
+                    showBlogList();
+                }
+            } else {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+
+            // Save last view in Dexie (optional)
+            _db.session.put({ key: 'lastView', value: path });
         }
 
+        // Intercept navigation clicks to use pushState
+        document.addEventListener('click', function(e) {
+            var link = e.target.closest('a');
+            if (!link) return;
+            var href = link.getAttribute('href');
+            if (!href || href.startsWith('http') || href.startsWith('https')) return;
+            if (href.startsWith('/') && !href.startsWith('//')) {
+                e.preventDefault();
+                history.pushState(null, '', href);
+                router();
+            }
+        });
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', router);
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             loadPostList();
-            window.addEventListener('hashchange', router);
-            document.getElementById('homeLink').addEventListener('click', function(e) {
-                e.preventDefault();
-                window.location.hash = '#/';
-            });
             router();
 
+            // Home link click (will be intercepted above, but ensure)
+            document.getElementById('homeLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                history.pushState(null, '', '/');
+                router();
+            });
+
+            // Restore last view if possible (optional)
             _db.session.get('lastView').then(function(rec) {
-                if (rec && rec.value && (window.location.hash === '' || window.location.hash === '#')) {
-                    var val = rec.value;
-                    window.location.hash = val === 'home' ? '#/' : '#/' + val;
+                if (rec && rec.value && window.location.pathname === '/') {
+                    // If user is at root, we might want to restore? Actually we stay at root.
+                    // Keep it simple - no auto redirect to avoid confusion.
                 }
             }).catch(function() {});
         });
