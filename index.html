@@ -6,7 +6,7 @@
     <title>Brain – study tool</title>
     <meta name="description" content="Study tool with a $0/month plan (apply via DM) and an instant $19/month plan. Organize PDFs, notes, and syllabi into a 3D knowledge map.">
     <meta name="keywords" content="study, learning, medical students, MCAT, USMLE, productivity, visual learning">
-    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
+    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js" defer></script>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -348,6 +348,7 @@
             </nav>
         </header>
 
+        <main>
         <!-- HOME -->
         <div id="page-home" class="page active">
             <div class="hero">
@@ -441,13 +442,14 @@
             <p>That page drifted off into space.</p>
             <a class="btn" href="/">Take me home</a>
         </div>
+        </main>
 
         <footer>
             <p>© 2026 Brain. All rights reserved. | Hosted at <a href="https://brain.try4ever.com" target="_blank">brain.try4ever.com</a></p>
         </footer>
     </div>
 
-    <script src="blog-posts.js"></script>
+    <script src="blog-posts.js" defer></script>
     <script>
         var _db = new Dexie('BrainSession');
         _db.version(1).stores({ session: 'key' });
@@ -594,7 +596,7 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         var stars = [];
-        for (var i = 0; i < 250; i++) {
+        for (var i = 0; i < 120; i++) {
             stars.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
@@ -602,6 +604,7 @@
                 twinkle: Math.random() * 0.5 + 0.2
             });
         }
+        var rafId = null;
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             stars.forEach(function(star) {
@@ -610,9 +613,19 @@
                 ctx.fillStyle = 'rgba(255,255,255,' + star.twinkle + ')';
                 ctx.fill();
             });
-            requestAnimationFrame(draw);
+            rafId = requestAnimationFrame(draw);
         }
-        draw();
+        function startStars() {
+            if (rafId === null) rafId = requestAnimationFrame(draw);
+        }
+        function stopStars() {
+            if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+        }
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) stopStars();
+            else startStars();
+        });
+        startStars();
         window.addEventListener('resize', function() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
