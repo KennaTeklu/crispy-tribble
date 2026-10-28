@@ -1,0 +1,354 @@
+#!/usr/bin/env node
+/**
+ * Brain (try4ever.com) static site generator — zero dependencies, Node >= 16.
+ *
+ * Architecture: every route on https://try4ever.com is a REAL static file, so
+ * GitHub Pages serves it with HTTP 200 and crawlers can index it. The only
+ * file ever served with an error status is 404.html, which GitHub Pages
+ * returns (with the custom design) for genuinely unknown URLs.
+ *
+ * Inputs:
+ *   site/layout.html        shared page shell (head, nav, footer, styles, JS)
+ *   site/pages/*.html       main-content fragment per static page
+ *   blog-posts/post*.js     blog data files (window.blogPosts.push({...}))
+ *
+ * Outputs (repo root — deploy directory for GitHub Pages, branch: main):
+ *   index.html, how/, features/, about/, faq/, terms/, privacy/, refund/,
+ *   blog/, blog/<slug>/, 404.html, sitemap.xml, robots.txt, .nojekyll
+ *
+ * Usage:  node generate.js
+ * After editing any file in site/ or blog-posts/, re-run and commit.
+ */
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+
+const ROOT = __dirname;
+const SITE = 'https://try4ever.com';
+const TODAY = new Date().toISOString().slice(0, 10);
+
+// ---------------------------------------------------------------------------
+// Small helpers
+// ---------------------------------------------------------------------------
+function read(p) { return fs.readFileSync(path.join(ROOT, p), 'utf8'); }
+function write(p, content) {
+    const abs = path.join(ROOT, p);
+    fs.mkdirSync(path.dirname(abs), { recursive: true });
+    fs.writeFileSync(abs, content);
+}
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function fail(msg) { console.error('BUILD ERROR: ' + msg); process.exit(1); }
+
+// ---------------------------------------------------------------------------
+// Load blog posts from blog-posts/post*.js  (single source of truth)
+// ---------------------------------------------------------------------------
+function loadPosts() {
+    const dir = path.join(ROOT, 'blog-posts');
+    const files = fs.readdirSync(dir)
+        .filter(f => /^post\d+\.js$/i.test(f))
+        .sort((a, b) => (parseInt(a.replace(/\D/g, ''), 10) || 0) - (parseInt(b.replace(/\D/g, ''), 10) || 0));
+    const posts = [];
+    for (const f of files) {
+        const sandbox = { window: {} };
+        try {
+            vm.runInNewContext(fs.readFileSync(path.join(dir, f), 'utf8'), sandbox, { filename: f });
+        } catch (e) { fail('blog-posts/' + f + ' threw: ' + e.message); }
+        const arr = sandbox.window.blogPosts || [];
+        const newOnes = arr;
+        if (newOnes.length === 0) fail('blog-posts/' + f + ' pushed no new post(s)');
+        for (const p of newOnes) {
+            for (const k of ['title', 'date', 'slug', 'excerpt', 'body']) {
+                if (!p || !p[k]) fail('blog-posts/' + f + ': post missing field "' + k + '"');
+            }
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(p.date)) fail('blog-posts/' + f + ': bad date "' + p.date + '" (expected YYYY-MM-DD)');
+            if (!/^[a-z0-9-]+$/.test(p.slug)) fail('blog-posts/' + f + ': bad slug "' + p.slug + '" (lowercase letters, digits, dashes)');
+        }
+        posts.push(...newOnes.map(p => ({ file: f, title: p.title, date: p.date, slug: p.slug, tags: Array.isArray(p.tags) ? p.tags : [], excerpt: p.excerpt, body: p.body })));
+    }
+    const seen = new Set();
+    for (const p of posts) {
+        if (seen.has(p.slug)) fail('duplicate slug "' + p.slug + '"');
+        seen.add(p.slug);
+    }
+    // Newest first; stable (same-date posts keep reverse-file order, i.e. newest additions first)
+    return posts.slice().reverse().sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+}
+
+// ---------------------------------------------------------------------------
+// Per-page metadata (title / description / structured data)
+// ---------------------------------------------------------------------------
+const FAQ_JSONLD = `<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is Brain made for a specific exam?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Brain works for anything you study: USMLE, MCAT, history, programming, law, languages – any material you can put in a PDF, DOCX, TXT or EPUB file." } },
+        { "@type": "Question", "name": "Is my data safe?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your files are processed on your device and everything you create is stored in your own browser (IndexedDB). There is no cloud copy, no account database and no tracking. Clearing your browser storage deletes your data – it belongs to you." } },
+        { "@type": "Question", "name": "Is Brain free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "There is a $0/month plan. It requires a short application – email support@try4ever.com with what you're studying – and approval. The paid plan is $19/month and activates instantly. Every new account also gets a 7-day free trial of the full product: no card required and it does not auto-convert." } },
+        { "@type": "Question", "name": "Can I get a refund?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Paid periods are all sales final – the 7-day no-card trial exists so you can try everything before paying. If you were charged twice or charged in error, contact support@try4ever.com and we will fix billing mistakes. You can cancel in one click at any time and keep access until the end of the period you already paid for." } },
+        { "@type": "Question", "name": "Who builds Brain?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Brain is built and operated by try4ever, an independent solo software project based in Arizona, USA. Questions or issues: support@try4ever.com – we answer within 5 business days." } },
+        { "@type": "Question", "name": "How are payments handled?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Payments are processed by Stripe in USD. We never see or store your card details – Stripe handles the transaction on their certified infrastructure." } },
+        { "@type": "Question", "name": "What file types does Brain work with?",
+          "acceptedAnswer": { "@type": "Answer", "text": "PDF, DOCX, TXT and EPUB. Scanned PDFs are OCR-processed on your device (first 10 pages), and images, slides, spreadsheets and other documents are extracted locally as well." } }
+      ]
+    }
+    </script>`;
+
+const HOME_JSONLD = `<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Brain",
+      "alternateName": "Brain study tool",
+      "url": "https://try4ever.com/",
+      "publisher": { "@id": "https://try4ever.com/#org" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://try4ever.com/#org",
+      "name": "try4ever",
+      "description": "Independent solo software project based in Arizona, USA, building the Brain study tool.",
+      "url": "https://try4ever.com/",
+      "email": "support@try4ever.com",
+      "address": { "@type": "PostalAddress", "addressRegion": "Arizona", "addressCountry": "US" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Brain",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web browser",
+      "url": "https://try4ever.com/",
+      "description": "Brain turns PDFs, DOCX, TXT and EPUB files into a 3D knowledge map. Study, quiz yourself, and track mastery with color-coded topics. Files are processed on your device and never uploaded.",
+      "featureList": "3D knowledge map, color-coded mastery tracking, quiz and fill-in-the-blank generation, works offline, on-device file processing, PDF/DOCX/TXT/EPUB support",
+      "offers": [
+        { "@type": "Offer", "name": "Free plan", "price": "0", "priceCurrency": "USD", "description": "Application-based free access. Apply via email at support@try4ever.com." },
+        { "@type": "Offer", "name": "Instant monthly plan", "price": "19", "priceCurrency": "USD", "description": "Instant activation. 7-day free trial with no card required; trial does not auto-convert." }
+      ],
+      "publisher": { "@id": "https://try4ever.com/#org" }
+    }
+    </script>`;
+
+const PAGES = [
+    { route: 'home',     path: '/',        title: 'Brain – Turn PDFs & Notes Into a 3D Study Map', desc: 'Turn PDFs & notes into a 3D knowledge map you can study from. 7-day trial, no card. Free plan by application; $19/mo instant. Files never leave your device.', jsonld: HOME_JSONLD, nav: null },
+    { route: 'how',      path: '/how/',    title: 'How Brain Works – From Upload to 3D Knowledge Map', desc: 'Upload a PDF, DOCX, TXT or EPUB, watch it become a 3D graph of topics, quiz yourself, and track mastery from red to green. On-device processing, step by step.', jsonld: '', nav: 'how' },
+    { route: 'features', path: '/features/', title: 'Features – 3D Map, Mastery Tracking, Quizzes, Offline', desc: 'A 3D knowledge map, color-coded mastery, quiz generation, offline mode and on-device file processing. Everything runs in your browser – no cloud, no tracking.', jsonld: '', nav: 'features' },
+    { route: 'about',    path: '/about/',  title: 'About Brain – Built by try4ever, Arizona USA', desc: 'Brain is a solo-built study tool by try4ever, an independent project in Arizona, USA. Private by design: files are processed on your device. Contact support@try4ever.com.', jsonld: '', nav: 'about' },
+    { route: 'faq',      path: '/faq/',    title: 'FAQ – Brain Study Tool', desc: 'Answers about pricing (free plan by application, $19/mo, 7-day no-card trial), refunds, data privacy, file types, and who builds Brain.', jsonld: FAQ_JSONLD, nav: 'faq' },
+    { route: 'terms',    path: '/terms/',  title: 'Terms of Service – Brain', desc: 'The agreement between you and try4ever for using Brain: plans and billing, cancellation, refunds, acceptable use, governing law (Arizona, USA). Effective September 20, 2026.', jsonld: '', nav: null },
+    { route: 'privacy',  path: '/privacy/', title: 'Privacy Policy – Brain', desc: 'Your study material never leaves your device. No analytics, no trackers, no account database. What can leave your device, only by your action.', jsonld: '', nav: null },
+    { route: 'refund',   path: '/refund/', title: 'Refund & Cancellation Policy – Brain', desc: 'Cancel in one click anytime and keep access until your paid period ends. 7-day free trial with no card. All sales final except our own billing errors.', jsonld: '', nav: null },
+];
+
+// ---------------------------------------------------------------------------
+// Render one page through the layout
+// ---------------------------------------------------------------------------
+const LAYOUT = read('site/layout.html');
+
+function render({ content, title, desc, url, robots, ogType, ogExtra, jsonld, nav }) {
+    const tokens = { A_HOW: '', A_FEATURES: '', A_ABOUT: '', A_FAQ: '', A_BLOG: '' };
+    if (nav && tokens['A_' + nav.toUpperCase()] !== undefined) tokens['A_' + nav.toUpperCase()] = ' class="active" aria-current="page"';
+    let html = LAYOUT;
+    const sub = (token, value) => { html = html.replaceAll(token, () => value); };
+    sub('{{CONTENT}}', content);
+    sub('{{TITLE}}', esc(title));
+    sub('{{DESC}}', esc(desc));
+    sub('{{ROBOTS}}', robots);
+    sub('{{EXTRA_HEAD}}', (url ? '    <link rel="canonical" href="' + esc(url) + '">\n' : '') + (jsonld ? jsonld + '\n' : ''));
+    sub('{{OG_TYPE}}', ogType);
+    sub('{{URL}}', esc(url || SITE + '/'));
+    sub('{{OG_EXTRA}}', ogExtra || '');
+    sub('{{A_HOW}}', tokens.A_HOW);
+    sub('{{A_FEATURES}}', tokens.A_FEATURES);
+    sub('{{A_ABOUT}}', tokens.A_ABOUT);
+    sub('{{A_FAQ}}', tokens.A_FAQ);
+    sub('{{A_BLOG}}', tokens.A_BLOG);
+    if (/\{\{[A-Z_]+\}\}/.test(html)) fail('unreplaced placeholder in output for ' + url);
+    return html;
+}
+
+// ---------------------------------------------------------------------------
+// Build static pages
+// ---------------------------------------------------------------------------
+function buildStaticPages() {
+    for (const p of PAGES) {
+        const fragPath = 'site/pages/' + p.route + '.html';
+        if (!fs.existsSync(path.join(ROOT, fragPath))) fail('missing fragment: ' + fragPath);
+        const html = render({
+            content: read(fragPath),
+            title: p.title, desc: p.desc, url: SITE + p.path,
+            robots: 'index, follow, max-image-preview:large',
+            ogType: 'website', jsonld: p.jsonld, nav: p.nav,
+        });
+        const outPath = p.route === 'home' ? 'index.html' : p.path.replace(/^\//, '').replace(/\/$/, '') + '/index.html';
+        write(outPath, html);
+        console.log('  ✓', p.path.padEnd(12), '->', outPath);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Build blog index + post pages
+// ---------------------------------------------------------------------------
+function buildBlog(posts) {
+    // Blog index
+    const items = posts.map(p =>
+        '            <li>\n' +
+        '                <a href="/blog/' + p.slug + '/">' + esc(p.title) + '</a>\n' +
+        '                <div class="post-meta">' + esc(p.date) + ' · ' + esc(p.tags.join(', ')) + '</div>\n' +
+        '                <div class="post-excerpt">' + esc(p.excerpt) + '</div>\n' +
+        '            </li>').join('\n');
+
+    const blogJsonld = `<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Brain Blog",
+      "url": "https://try4ever.com/blog/",
+      "description": "Notes on studying, memory and building Brain – a 3D knowledge map tool for students.",
+      "publisher": { "@id": "https://try4ever.com/#org" },
+      "blogPost": [
+${posts.map(p => '        { "@type": "BlogPosting", "headline": ' + JSON.stringify(p.title) + ', "url": "' + SITE + '/blog/' + p.slug + '/", "datePublished": "' + p.date + '" }').join(',\n')}
+      ]
+    }
+    </script>`;
+
+    write('blog/index.html', render({
+        content: '<div class="section">\n    <h1 class="page-title">Blog</h1>\n    <p>Notes on studying, memory and building Brain – a 3D knowledge map tool for students.</p>\n    <ul class="post-list">\n' + items + '\n    </ul>\n</div>',
+        title: 'Blog – Brain Study Tool',
+        desc: 'Notes on studying, memory and building Brain – a 3D knowledge map tool for students.',
+        url: SITE + '/blog/',
+        robots: 'index, follow, max-image-preview:large',
+        ogType: 'website', jsonld: blogJsonld, nav: 'blog',
+    }));
+    console.log('  ✓', '/blog/'.padEnd(12), '-> blog/index.html (' + posts.length + ' posts)');
+
+    // Post pages
+    for (let i = 0; i < posts.length; i++) {
+        const p = posts[i];
+        const newer = i > 0 ? posts[i - 1] : null;   // published more recently
+        const older = i < posts.length - 1 ? posts[i + 1] : null;
+
+        const tagsHtml = p.tags.map(t => '<span class="tag-chip">' + esc(t) + '</span>').join('');
+        const navBits = [];
+        if (older) navBits.push('<a href="/blog/' + older.slug + '/" rel="prev">← Older: ' + esc(older.title) + '</a>');
+        if (newer) navBits.push('<span class="spacer"></span>');
+        if (newer) navBits.push('<a href="/blog/' + newer.slug + '/" rel="next">Newer: ' + esc(newer.title) + ' →</a>');
+
+        const content =
+            '<div class="section">\n' +
+            '    <a class="back-link" href="/blog/">← Back to blog</a>\n' +
+            '    <article>\n' +
+            '        <h1 class="post-title">' + esc(p.title) + '</h1>\n' +
+            '        <div class="post-meta-line">' + esc(p.date) + ' · <em>by try4ever</em></div>\n' +
+            '        <div class="post-meta-line">' + tagsHtml + '</div>\n' +
+            '        <div class="post-content">\n' + p.body + '\n        </div>\n' +
+            '    </article>\n' +
+            (navBits.length ? '    <nav class="post-nav" aria-label="Post navigation">' + navBits.join('') + '</nav>\n' : '') +
+            '</div>';
+
+        const jsonld = `<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": ${JSON.stringify(p.title)},
+      "description": ${JSON.stringify(p.excerpt)},
+      "image": "https://try4ever.com/og-image.png",
+      "datePublished": "${p.date}",
+      "dateModified": "${p.date}",
+      "keywords": ${JSON.stringify(p.tags.join(', '))},
+      "author": { "@type": "Organization", "name": "try4ever", "url": "https://try4ever.com/" },
+      "publisher": { "@type": "Organization", "name": "try4ever", "url": "https://try4ever.com/" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "${SITE}/blog/${p.slug}/" }
+    }
+    </script>`;
+
+        write('blog/' + p.slug + '/index.html', render({
+            content,
+            title: p.title + ' – Brain Blog',
+            desc: p.excerpt,
+            url: SITE + '/blog/' + p.slug + '/',
+            robots: 'index, follow, max-image-preview:large',
+            ogType: 'article',
+            ogExtra: '    <meta property="article:published_time" content="' + p.date + '">',
+            jsonld, nav: 'blog',
+        }));
+        console.log('  ✓', ('/blog/' + p.slug + '/').padEnd(12), '-> blog/' + p.slug + '/index.html');
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Build 404 page (GitHub Pages serves this — with HTTP 404 — for unknown URLs)
+// ---------------------------------------------------------------------------
+function build404() {
+    const content =
+        '<div class="section">\n' +
+        '    <div class="error-code" aria-hidden="true">404</div>\n' +
+        '    <h1 class="page-title">Page not found</h1>\n' +
+        '    <p>This page drifted out of orbit — the link may be outdated or the page may have moved.</p>\n' +
+        '    <p><a class="btn" href="/">Go home</a> <a class="btn-ghost" href="/blog/">Read the blog</a></p>\n' +
+        '    <p>Looking for the study tool? <a href="https://brain.try4ever.com" target="_blank" rel="noopener">Open the app</a> · Questions: <a href="mailto:support@try4ever.com">support@try4ever.com</a></p>\n' +
+        '</div>';
+    write('404.html', render({
+        content,
+        title: 'Page not found (404) – Brain',
+        desc: 'That page does not exist on try4ever.com. Head back home, read the blog, or open the Brain study app.',
+        url: '', // no canonical: this is an error page, not a content page
+        robots: 'noindex, follow',
+        ogType: 'website', jsonld: '', nav: null,
+    }));
+    console.log('  ✓', '/<unknown> '.padEnd(12), '-> 404.html (custom, served with HTTP 404)');
+}
+
+// ---------------------------------------------------------------------------
+// sitemap.xml + robots.txt + .nojekyll
+// ---------------------------------------------------------------------------
+function buildMeta(posts) {
+    const urls = [];
+    for (const p of PAGES) urls.push({ loc: SITE + p.path, lastmod: TODAY });
+    urls.push({ loc: SITE + '/blog/', lastmod: TODAY });
+    for (const p of posts) urls.push({ loc: SITE + '/blog/' + p.slug + '/', lastmod: p.date });
+
+    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+        urls.map(u => '    <url><loc>' + u.loc + '</loc><lastmod>' + u.lastmod + '</lastmod></url>').join('\n') +
+        '\n</urlset>\n';
+    write('sitemap.xml', xml);
+
+    write('robots.txt',
+        'User-agent: *\n' +
+        'Allow: /\n\n' +
+        'Sitemap: ' + SITE + '/sitemap.xml\n');
+
+    write('.nojekyll', '');
+    console.log('  ✓', 'sitemap.xml (' + urls.length + ' URLs), robots.txt, .nojekyll');
+}
+
+// ---------------------------------------------------------------------------
+// Run
+// ---------------------------------------------------------------------------
+console.log('Brain static site generator');
+const posts = loadPosts();
+console.log('Loaded ' + posts.length + ' blog posts (newest: ' + posts[0].slug + ' ' + posts[0].date + ')');
+console.log('Building pages:');
+buildStaticPages();
+buildBlog(posts);
+build404();
+buildMeta(posts);
+console.log('Done. Commit the repo root — GitHub Pages redeploys automatically on push to main.');

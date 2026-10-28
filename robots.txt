@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://try4ever.com/sitemap.xml
