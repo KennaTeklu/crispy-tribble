@@ -1,4 +1,4 @@
 Contact: mailto:support@try4ever.com
-Expires: 2027-10-29T18:08:26Z
+Expires: 2027-10-29T19:36:44Z
 Preferred-Languages: en
 Canonical: https://try4ever.com/.well-known/security.txt

@@ -83,6 +83,31 @@ function loadPosts() {
 // ---------------------------------------------------------------------------
 // Per-page metadata (title / description / structured data)
 // ---------------------------------------------------------------------------
+// Official brand profiles — Google uses sameAs to link these entities to the
+// try4ever brand in search. Every profile links back to try4ever.com in its bio.
+const SOCIAL_SAMEAS = [
+    'https://www.reddit.com/user/try4ever_com',
+    'https://www.tumblr.com/try4ever-com',
+    'https://www.instagram.com/try4ever_com/',
+    'https://www.facebook.com/profile.php?id=61595619313031',
+    'https://x.com/try4everCom',
+    'https://www.linkedin.com/company/143919630/',
+    'https://t.me/try4ever_com',
+    'https://www.youtube.com/@try4ever_com',
+    'https://www.threads.com/@try4ever_com',
+    'https://bsky.app/profile/try4ever.bsky.social',
+    'https://www.dailymotion.com/user/try4ever',
+    'https://ok.ru/profile/910712328823',
+    'https://vk.ru/id1101212552',
+    'https://vkvideo.ru/@club242546823',
+    'https://www.pinterest.com/try4evercom/',
+    'https://rumble.com/user/try4ever_com',
+    'https://vimeo.com/try4ever',
+    'https://odysee.com/@try4ever',
+    'https://kick.com/tryever',
+    'https://www.twitch.tv/try4ever_com',
+];
+
 const FAQ_JSONLD = `<script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -125,6 +150,10 @@ const HOME_JSONLD = `<script type="application/ld+json">
       "description": "Independent solo software project based in Arizona, USA, building the Brain study tool.",
       "url": "https://try4ever.com/",
       "email": "support@try4ever.com",
+      "logo": "https://try4ever.com/og-image.png",
+      "sameAs": [
+${SOCIAL_SAMEAS.map(u => '        "' + u + '"').join(',\n')}
+      ],
       "address": { "@type": "PostalAddress", "addressRegion": "Arizona", "addressCountry": "US" }
     }
     </script>
