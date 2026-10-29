@@ -354,8 +354,40 @@ function buildMeta(posts) {
         'Allow: /\n\n' +
         'Sitemap: ' + SITE + '/sitemap.xml\n');
 
+    // favicon.ico — many scanners and crawlers still request /favicon.ico by
+    // name. Reuse the 32x32 PNG data-URI already declared in the layout so the
+    // icon exists in exactly one place.
+    const m = LAYOUT.match(/rel="icon" type="image\/png" sizes="32x32" href="data:image\/png;base64,([^"]+)"/);
+    if (!m) fail('layout: 32x32 PNG favicon data-URI not found');
+    fs.writeFileSync(path.join(ROOT, 'favicon.ico'), Buffer.from(m[1], 'base64'));
+
+    // .well-known/security.txt (RFC 9116) — trust/security graders and
+    // researchers look for this to confirm an accountable operator exists.
+    const expiry = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString().replace(/\.\d{3}Z$/, 'Z');
+    write('.well-known/security.txt',
+        'Contact: mailto:support@try4ever.com\n' +
+        'Expires: ' + expiry + '\n' +
+        'Preferred-Languages: en\n' +
+        'Canonical: ' + SITE + '/.well-known/security.txt\n');
+
+    // llms.txt — emerging standard AI agents fetch to discover a site's
+    // authoritative pages in one request.
+    const lines = [
+        '# Brain (try4ever.com)',
+        '',
+        'Brain is a study tool by try4ever that turns PDFs, DOCX, TXT and EPUB files into an interactive 3D knowledge map in the browser. Files are processed entirely on the user\'s device — no upload, no account database, no tracking. Free plan by application ($0/mo), paid plan $19/mo, 7-day no-card trial. App lives at https://brain.try4ever.com.',
+        '',
+        '## Pages',
+        '',
+    ];
+    for (const p of PAGES) lines.push('- [' + p.title + '](' + SITE + p.path + '): ' + p.desc);
+    lines.push('- [Blog – Brain Study Tool](' + SITE + '/blog/): Notes on studying, memory and building Brain.');
+    for (const p of posts) lines.push('- [' + p.title + '](' + SITE + '/blog/' + p.slug + '/): ' + p.excerpt.replace(/\s+/g, ' ').trim());
+    lines.push('', '## Contact', '', '- Support: support@try4ever.com (answers within 5 business days)', '- Operator: try4ever, Arizona, USA', '');
+    write('llms.txt', lines.join('\n'));
+
     write('.nojekyll', '');
-    console.log('  ✓', 'sitemap.xml (' + urls.length + ' URLs), robots.txt, .nojekyll');
+    console.log('  ✓', 'sitemap.xml (' + urls.length + ' URLs), robots.txt, .nojekyll, favicon.ico, .well-known/security.txt, llms.txt');
 }
 
 // ---------------------------------------------------------------------------

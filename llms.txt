@@ -1,0 +1,31 @@
+# Brain (try4ever.com)
+
+Brain is a study tool by try4ever that turns PDFs, DOCX, TXT and EPUB files into an interactive 3D knowledge map in the browser. Files are processed entirely on the user's device — no upload, no account database, no tracking. Free plan by application ($0/mo), paid plan $19/mo, 7-day no-card trial. App lives at https://brain.try4ever.com.
+
+## Pages
+
+- [Brain – Turn PDFs & Notes Into a 3D Study Map](https://try4ever.com/): Turn PDFs & notes into a 3D knowledge map you can study from. 7-day trial, no card. Free plan by application; $19/mo instant. Files never leave your device.
+- [How Brain Works – From Upload to 3D Knowledge Map](https://try4ever.com/how/): Upload a PDF, DOCX, TXT or EPUB, watch it become a 3D graph of topics, quiz yourself, and track mastery from red to green. On-device processing, step by step.
+- [Features – 3D Map, Mastery Tracking, Quizzes, Offline](https://try4ever.com/features/): A 3D knowledge map, color-coded mastery, quiz generation, offline mode and on-device file processing. Everything runs in your browser – no cloud, no tracking.
+- [About Brain – Built by try4ever, Arizona USA](https://try4ever.com/about/): Brain is a solo-built study tool by try4ever, an independent project in Arizona, USA. Private by design: files are processed on your device. Contact support@try4ever.com.
+- [FAQ – Brain Study Tool](https://try4ever.com/faq/): Answers about pricing (free plan by application, $19/mo, 7-day no-card trial), refunds, data privacy, file types, and who builds Brain.
+- [Terms of Service – Brain](https://try4ever.com/terms/): The agreement between you and try4ever for using Brain: plans and billing, cancellation, refunds, acceptable use, governing law (Arizona, USA). Effective September 20, 2026.
+- [Privacy Policy – Brain](https://try4ever.com/privacy/): Your study material never leaves your device. No analytics, no trackers, no account database. What can leave your device, only by your action.
+- [Refund & Cancellation Policy – Brain](https://try4ever.com/refund/): Cancel in one click anytime and keep access until your paid period ends. 7-day free trial with no card. All sales final except our own billing errors.
+- [Blog – Brain Study Tool](https://try4ever.com/blog/): Notes on studying, memory and building Brain.
+- [Spaced repetition vs. 3D maps — which one wins for visual learners?](https://try4ever.com/blog/spaced-repetition-vs-3d-maps/): They solve different problems. You probably want both.
+- [Red to green: how color-coded mastery actually changes how you study](https://try4ever.com/blog/red-to-green-mastery/): A progress bar you can see in 3D changes which topics you choose to study next.
+- [Why I built Brain — a 3D map for self-study](https://try4ever.com/blog/why-i-built-brain/): Outlines hide the shape of what you're learning. I wanted to see it.
+- [The Coffee Shop Conversation That Changed How I Study](https://try4ever.com/blog/coffee-shop-conversation/): Two friends, one struggling with exams, one who seems to have it all figured out. A simple chat that reveals the secret.
+- [7 Weird Study Hacks That Actually Work (Number 5 Will Surprise You)](https://try4ever.com/blog/weird-study-hacks/): Forget flash cards and highlighters. These unconventional methods are backed by science – and one of them involves your GPS.
+- [Exclusive Interview: A Learning Coach Reveals the Secret to Mastering Any Exam](https://try4ever.com/blog/learning-coach-interview/): We sat down with a seasoned learning coach who has helped thousands of students pass the toughest exams. Here's what they had to say.
+- [Why 'Read It 5 Times' Is the Worst Advice You'll Ever Get](https://try4ever.com/blog/read-five-times-worst/): You've been told to read your notes over and over. That's a waste of time. Here's what actually works, and why repetition is the enemy of retention.
+- [How I Went from Drowning in Notes to Actually Enjoying the Process](https://try4ever.com/blog/drowning-in-notes/): I used to hate studying. Then I discovered a way to see my whole syllabus at once – and everything changed.
+- [Breaking News: Rote Memorization Officially Declared Inefficient – New Study Says Visual Mapping Wins](https://try4ever.com/blog/rote-memorization-inefficient/): Scientists confirm that traditional note-taking methods are failing. Here's what actually works, and why you should care.
+- [Poetic Musings on the Brain: Why You're Already a Stargazer](https://try4ever.com/blog/poetic-brain-stargazer/): Your hippocampus is a constellation of memories. Let's explore the cosmic architecture inside your skull – and how to map it.
+- [The Untapped Power of Spatial Memory: How Your Brain Navigates Knowledge](https://try4ever.com/blog/spatial-memory-power/): Your brain is built for navigation, not for memorizing lists. This article explores the neuroscience behind spatial memory and how you can harness it to learn anything faster.
+
+## Contact
+
+- Support: support@try4ever.com (answers within 5 business days)
+- Operator: try4ever, Arizona, USA
