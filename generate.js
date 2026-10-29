@@ -85,28 +85,36 @@ function loadPosts() {
 // ---------------------------------------------------------------------------
 // Official brand profiles — Google uses sameAs to link these entities to the
 // try4ever brand in search. Every profile links back to try4ever.com in its bio.
-const SOCIAL_SAMEAS = [
-    'https://www.reddit.com/user/try4ever_com',
-    'https://www.tumblr.com/try4ever-com',
-    'https://www.instagram.com/try4ever_com/',
-    'https://www.facebook.com/profile.php?id=61595619313031',
-    'https://x.com/try4everCom',
-    'https://www.linkedin.com/company/143919630/',
-    'https://t.me/try4ever_com',
-    'https://www.youtube.com/@try4ever_com',
-    'https://www.threads.com/@try4ever_com',
-    'https://bsky.app/profile/try4ever.bsky.social',
-    'https://www.dailymotion.com/user/try4ever',
-    'https://ok.ru/profile/910712328823',
-    'https://vk.ru/id1101212552',
-    'https://vkvideo.ru/@club242546823',
-    'https://www.pinterest.com/try4evercom/',
-    'https://rumble.com/user/try4ever_com',
-    'https://vimeo.com/try4ever',
-    'https://odysee.com/@try4ever',
-    'https://kick.com/tryever',
-    'https://www.twitch.tv/try4ever_com',
+// Ordered by approximate daily active users (largest reach first); this order
+// is also used for the visible footer links so crawlers weight them the same way.
+const SOCIAL_PROFILES = [
+    { u: 'https://www.facebook.com/profile.php?id=61595619313031', n: 'Facebook' },    // ~3.07B DAU
+    { u: 'https://www.youtube.com/@try4ever_com',                  n: 'YouTube' },    // ~2.5B logged-in daily reach
+    { u: 'https://www.instagram.com/try4ever_com/',                n: 'Instagram' },  // ~2.0B DAU
+    { u: 'https://x.com/try4everCom',                              n: 'X (Twitter)' },// ~250M DAU
+    { u: 'https://www.reddit.com/user/try4ever_com',               n: 'Reddit' },     // ~120M DAU
+    { u: 'https://www.linkedin.com/company/143919630/',            n: 'LinkedIn' },   // ~110M DAU
+    { u: 'https://t.me/try4ever_com',                              n: 'Telegram' },   // ~100M+ DAU
+    { u: 'https://www.threads.com/@try4ever_com',                  n: 'Threads' },    // ~100M DAU
+    { u: 'https://www.pinterest.com/try4evercom/',                 n: 'Pinterest' },  // ~90M DAU
+    { u: 'https://vk.ru/id1101212552',                             n: 'VK' },         // ~50M DAU
+    { u: 'https://vkvideo.ru/@club242546823',                      n: 'VK Video' },   // VK ecosystem
+    { u: 'https://ok.ru/profile/910712328823',                     n: 'OK.ru' },      // ~40M DAU
+    { u: 'https://www.twitch.tv/try4ever_com',                     n: 'Twitch' },     // ~35M DAU
+    { u: 'https://www.dailymotion.com/user/try4ever',              n: 'Dailymotion' },// ~25M DAU
+    { u: 'https://www.tumblr.com/try4ever-com',                    n: 'Tumblr' },     // ~12M DAU
+    { u: 'https://rumble.com/user/try4ever_com',                   n: 'Rumble' },     // ~8M
+    { u: 'https://bsky.app/profile/try4ever.bsky.social',          n: 'Bluesky' },    // ~8M
+    { u: 'https://vimeo.com/try4ever',                             n: 'Vimeo' },      // ~5M
+    { u: 'https://kick.com/tryever',                               n: 'Kick' },       // ~4M
+    { u: 'https://odysee.com/@try4ever',                           n: 'Odysee' },     // ~1.5M
 ];
+const SOCIAL_SAMEAS = SOCIAL_PROFILES.map(p => p.u);
+// Visible footer links (crawlable, plain HTML): gives search engines and AI
+// agents a real outbound link to each profile, strongest platform first.
+const SOCIAL_LINKS_HTML = '<p class="social-links" aria-label="Official try4ever profiles">Find us: ' +
+    SOCIAL_PROFILES.map(p => '<a href="' + p.u + '" target="_blank" rel="noopener">' + p.n + '</a>').join(' · ') +
+    '</p>';
 
 const FAQ_JSONLD = `<script type="application/ld+json">
     {
@@ -209,6 +217,7 @@ function render({ content, title, desc, url, robots, ogType, ogExtra, jsonld, na
     sub('{{A_ABOUT}}', tokens.A_ABOUT);
     sub('{{A_FAQ}}', tokens.A_FAQ);
     sub('{{A_BLOG}}', tokens.A_BLOG);
+    sub('{{SOCIAL_LINKS}}', SOCIAL_LINKS_HTML);
     if (/\{\{[A-Z_]+\}\}/.test(html)) fail('unreplaced placeholder in output for ' + url);
     return html;
 }
@@ -412,6 +421,10 @@ function buildMeta(posts) {
     for (const p of PAGES) lines.push('- [' + p.title + '](' + SITE + p.path + '): ' + p.desc);
     lines.push('- [Blog – Brain Study Tool](' + SITE + '/blog/): Notes on studying, memory and building Brain.');
     for (const p of posts) lines.push('- [' + p.title + '](' + SITE + '/blog/' + p.slug + '/): ' + p.excerpt.replace(/\s+/g, ' ').trim());
+    lines.push('', '## Official profiles', '',
+        'try4ever maintains official profiles on these platforms (same accounts listed in the Organization sameAs markup):',
+        '');
+    for (const p of SOCIAL_PROFILES) lines.push('- ' + p.n + ': ' + p.u);
     lines.push('', '## Contact', '', '- Support: support@try4ever.com (answers within 5 business days)', '- Operator: try4ever, Arizona, USA', '');
     write('llms.txt', lines.join('\n'));
 
