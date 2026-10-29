@@ -431,7 +431,24 @@
         footer a:hover { text-decoration: underline; }
         footer .legal-links { margin-top: 8px; }
         footer .legal-links a { margin: 0 6px; }
-        footer .social-links { margin-top: 14px; line-height: 1.9; max-width: 720px; margin-left: auto; margin-right: auto; }
+        footer .social-links {
+            margin: 16px auto 4px; display: flex; flex-wrap: wrap; justify-content: center;
+            align-items: center; gap: 8px; max-width: 680px;
+        }
+        footer .social-links .social-label { color: #98a2b3; margin-right: 4px; }
+        footer .soc {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 50%;
+            background: #161a24; border: 1px solid #2a3040;
+            transition: border-color .15s, background .15s, transform .15s;
+        }
+        footer .soc:hover, footer .soc:focus-visible {
+            border-color: #2dd4bf; background: #1b2230; transform: translateY(-2px);
+        }
+        footer .soc svg { width: 17px; height: 17px; fill: #c9cede; transition: fill .15s; }
+        footer .soc:hover svg, footer .soc:focus-visible svg { fill: #2dd4bf; }
+        footer .soc svg.mono text { fill: #c9cede; font-size: 11px; font-weight: 600; font-family: system-ui, sans-serif; }
+        footer .soc:hover svg.mono text { fill: #2dd4bf; }
         footer .op-line { margin-top: 8px; color: #98a2b3; }
         @media (max-width: 600px) {
             .hero h1 { font-size: 28px; }
