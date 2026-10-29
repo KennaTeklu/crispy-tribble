@@ -15,6 +15,15 @@ Every route is a **real, pre-rendered HTML file**, so GitHub Pages serves it wit
 | `/blog/<slug>/` | `blog/<slug>/index.html` |
 | anything else | `404.html` — served **with HTTP status 404** by GitHub Pages |
 
+**Smart 404.** `404.html` is not a dumb dead end: at build time the generator embeds the full site index (all 20 URLs + titles) into the page, and `site/404-recovery.js` turns the error page into a self-service recovery tool:
+
+- exact match after normalization (case, trailing slash, `/index.html`) → instant client-side redirect to the real page;
+- typos and near-misses (e.g. `/blog/spatial-memory-powr/`) → fuzzy-matched "Were you looking for…" suggestions, with an auto-redirect countdown (cancellable) for high-confidence matches;
+- it also understands the site's retired URL schemes (`?tg=…` handoff links and first-generation `#/blog/…` hash routes);
+- crawlers still receive the truthful HTTP 404 + `noindex`, so invalid URLs never enter the index — recovery is purely a human layer.
+
+The same legacy-scheme detection (`?tg=`, `#/…`) also runs on every normal page, so old shared/indexed links land on the right content even when they don't hit the 404 page.
+
 Supporting files: `sitemap.xml` (all 20 URLs), `robots.txt`, `.nojekyll` (skips Jekyll), `og-image.png` (social preview card).
 
 Each generated page is fully self-contained (inline CSS/JS, no external requests) and carries its own `<title>`, meta description, canonical URL, Open Graph/Twitter tags, and JSON-LD structured data (`WebSite` + `Organization` + `SoftwareApplication` on home, `FAQPage` on `/faq/`, `Blog` on `/blog/`, `BlogPosting` on every post).

@@ -295,15 +295,33 @@ ${posts.map(p => '        { "@type": "BlogPosting", "headline": ' + JSON.stringi
 
 // ---------------------------------------------------------------------------
 // Build 404 page (GitHub Pages serves this — with HTTP 404 — for unknown URLs)
+// Enhanced with a smart recovery engine: the full site index is embedded at
+// build time so visitors get exact-match redirects and fuzzy "did you mean"
+// suggestions, while crawlers still see a truthful 404 status.
 // ---------------------------------------------------------------------------
-function build404() {
+function build404(posts) {
+    const siteIndex = [];
+    for (const p of PAGES) siteIndex.push({ u: p.path, t: p.title });
+    siteIndex.push({ u: '/blog/', t: 'Blog – Brain Study Tool' });
+    for (const p of posts) siteIndex.push({ u: '/blog/' + p.slug + '/', t: p.title });
+
+    const recoverySrc = read('site/404-recovery.js');
+    const recent = posts.slice(0, 3).map(p =>
+        '<a href="/blog/' + p.slug + '/">' + esc(p.title) + '</a>').join(' · ');
+
     const content =
         '<div class="section">\n' +
         '    <div class="error-code" aria-hidden="true">404</div>\n' +
         '    <h1 class="page-title">Page not found</h1>\n' +
-        '    <p>This page drifted out of orbit — the link may be outdated or the page may have moved.</p>\n' +
+        '    <p>This page drifted out of orbit — the link may be outdated, mistyped, or the page may have moved.</p>\n' +
+        '    <div id="recovery" class="recovery-box" hidden></div>\n' +
+        '    <p id="countdownLine" class="countdown-line" hidden><span id="countdownText"></span><button id="cancelBtn" type="button">Cancel</button></p>\n' +
         '    <p><a class="btn" href="/">Go home</a> <a class="btn-ghost" href="/blog/">Read the blog</a></p>\n' +
+        '    <p>Popular pages: <a href="/how/">How it works</a> · <a href="/features/">Features</a> · <a href="/faq/">FAQ</a> · <a href="/about/">About</a></p>\n' +
+        '    <p>Recent posts: ' + recent + '</p>\n' +
         '    <p>Looking for the study tool? <a href="https://brain.try4ever.com" target="_blank" rel="noopener">Open the app</a> · Questions: <a href="mailto:support@try4ever.com">support@try4ever.com</a></p>\n' +
+        '    <script>window.__SITE_INDEX__ = ' + JSON.stringify(siteIndex) + ';</script>\n' +
+        '    <script>\n' + recoverySrc + '\n    </script>\n' +
         '</div>';
     write('404.html', render({
         content,
@@ -313,7 +331,7 @@ function build404() {
         robots: 'noindex, follow',
         ogType: 'website', jsonld: '', nav: null,
     }));
-    console.log('  ✓', '/<unknown> '.padEnd(12), '-> 404.html (custom, served with HTTP 404)');
+    console.log('  ✓', '/<unknown> '.padEnd(12), '-> 404.html (smart recovery, served with HTTP 404, site index: ' + siteIndex.length + ' entries)');
 }
 
 // ---------------------------------------------------------------------------
@@ -349,6 +367,6 @@ console.log('Loaded ' + posts.length + ' blog posts (newest: ' + posts[0].slug +
 console.log('Building pages:');
 buildStaticPages();
 buildBlog(posts);
-build404();
+build404(posts);
 buildMeta(posts);
 console.log('Done. Commit the repo root — GitHub Pages redeploys automatically on push to main.');
