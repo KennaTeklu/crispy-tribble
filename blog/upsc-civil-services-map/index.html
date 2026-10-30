@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    // THEME ENGINE — runs before first paint (no flash of the wrong mode).
+    // Default: follow the operating system (prefers-color-scheme). The moment
+    // the user explicitly toggles, that choice is stored and sticky forever
+    // (same 'brain.theme' key as the Brain app). While un-set, live system
+    // changes (dark→light) are followed instantly.
+    (function () {
+        var KEY = 'brain.theme';
+        function systemMode() {
+            try { return (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'; }
+            catch (e) { return 'dark'; }
+        }
+        function mode() {
+            try { var t = localStorage.getItem(KEY); if (t === 'light' || t === 'dark') return t; } catch (e) {}
+            return systemMode();
+        }
+        document.documentElement.setAttribute('data-theme', mode());
+        window.__themeMode = mode;
+        window.__setThemeMode = function (m, explicit) {
+            m = (m === 'light') ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', m);
+            if (explicit) { try { localStorage.setItem(KEY, m); } catch (e) {} }
+            try { window.dispatchEvent(new CustomEvent('brain:thememode', { detail: { mode: m } })); } catch (e) {}
+        };
+        try {
+            var mql = window.matchMedia('(prefers-color-scheme: light)');
+            var follow = function () {
+                try { var t = localStorage.getItem(KEY); if (t === 'light' || t === 'dark') return; } catch (e) {}
+                document.documentElement.setAttribute('data-theme', systemMode());
+            };
+            if (mql.addEventListener) mql.addEventListener('change', follow);
+            else if (mql.addListener) mql.addListener(follow);
+        } catch (e) {}
+    })();
+    </script>
+    <title>UPSC: The Whole Syllabus, Mapped – Brain</title>
+    <meta name="description" content="Prelims, mains, interview – and a syllabus with no natural boundary. Roughly a thousand final selections against applicants in the hundreds of thousands. Structure is the strategy.">
+    <meta name="author" content="try4ever">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0c12">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f5fa">
+    <meta name="color-scheme" content="dark light">
+    <link rel="canonical" href="https://try4ever.com/blog/upsc-civil-services-map/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://try4ever.com/#org",
+      "name": "try4ever",
+      "alternateName": "try4ever.com",
+      "url": "https://try4ever.com/",
+      "description": "Independent solo software project based in Arizona, USA, building the Brain study tool.",
+      "email": "support@try4ever.com",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://try4ever.com/#logo",
+        "url": "https://try4ever.com/og-image.png",
+        "contentUrl": "https://try4ever.com/og-image.png",
+        "width": 1200,
+        "height": 630,
+        "caption": "Brain by try4ever – turn PDFs and notes into a 3D knowledge map"
+      },
+      "image": {
+        "@id": "https://try4ever.com/#logo"
+      },
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61595619313031",
+        "https://www.youtube.com/@try4ever_com",
+        "https://www.instagram.com/try4ever_com/",
+        "https://x.com/try4everCom",
+        "https://www.reddit.com/user/try4ever_com",
+        "https://www.linkedin.com/company/143919630/",
+        "https://t.me/try4ever_com",
+        "https://www.threads.com/@try4ever_com",
+        "https://www.pinterest.com/try4evercom/",
+        "https://vk.ru/id1101212552",
+        "https://vkvideo.ru/@club242546823",
+        "https://ok.ru/profile/910712328823",
+        "https://www.twitch.tv/try4ever_com",
+        "https://www.dailymotion.com/user/try4ever",
+        "https://www.tumblr.com/try4ever-com",
+        "https://rumble.com/user/try4ever_com",
+        "https://bsky.app/profile/try4ever.bsky.social",
+        "https://vimeo.com/try4ever",
+        "https://kick.com/tryever",
+        "https://odysee.com/@try4ever"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Arizona",
+        "addressCountry": "US"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "support@try4ever.com",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://try4ever.com/#website",
+      "url": "https://try4ever.com/",
+      "name": "Brain",
+      "alternateName": "Brain study tool",
+      "publisher": {
+        "@id": "https://try4ever.com/#org"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://try4ever.com/blog/upsc-civil-services-map/#webpage",
+      "url": "https://try4ever.com/blog/upsc-civil-services-map/",
+      "name": "UPSC: The Whole Syllabus, Mapped – Brain",
+      "description": "Prelims, mains, interview – and a syllabus with no natural boundary. Roughly a thousand final selections against applicants in the hundreds of thousands. Structure is the strategy.",
+      "isPartOf": {
+        "@id": "https://try4ever.com/#website"
+      },
+      "about": {
+        "@id": "https://try4ever.com/#org"
+      },
+      "inLanguage": "en-US",
+      "primaryImageOfPage": {
+        "@id": "https://try4ever.com/#logo"
+      },
+      "mainEntity": {
+        "@id": "https://try4ever.com/blog/upsc-civil-services-map/#blogpost"
+      }
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://try4ever.com/blog/upsc-civil-services-map/#blogpost",
+      "headline": "UPSC: The Whole Syllabus, Mapped",
+      "description": "Prelims, mains, interview – and a syllabus with no natural boundary. Roughly a thousand final selections against applicants in the hundreds of thousands. Structure is the strategy.",
+      "image": "https://try4ever.com/og-image.png",
+      "datePublished": "2026-10-30",
+      "dateModified": "2026-10-30",
+      "keywords": "UPSC, civil services, IAS, India",
+      "author": {
+        "@id": "https://try4ever.com/#org"
+      },
+      "publisher": {
+        "@id": "https://try4ever.com/#org"
+      },
+      "isPartOf": {
+        "@id": "https://try4ever.com/blog/#blog",
+        "name": "Brain Blog"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://try4ever.com/blog/upsc-civil-services-map/#webpage"
+      }
+    }
+  ]
+}
+    </script>
+
+    <link rel="alternate" type="application/rss+xml" title="Brain Blog – try4ever.com" href="/feed.xml">
+    <!-- Open Graph / social previews -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Brain">
+    <meta property="og:title" content="UPSC: The Whole Syllabus, Mapped – Brain">
+    <meta property="og:description" content="Prelims, mains, interview – and a syllabus with no natural boundary. Roughly a thousand final selections against applicants in the hundreds of thousands. Structure is the strategy.">
+    <meta property="og:url" content="https://try4ever.com/blog/upsc-civil-services-map/">
+    <meta property="og:image" content="https://try4ever.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brain – a 3D knowledge map of connected study topics on a dark starfield">
+    <meta property="og:locale" content="en_US">
+    <meta property="article:published_time" content="2026-10-30">
+
+    <!-- ===== SOCIAL IDENTITY — source of truth, ranked by platform reach =====
+         Machine-readable on EVERY page: rel="me" identity links +
+         og:see_also below + the JSON-LD sameAs array. Each profile links
+         back to try4ever.com for verification. -->
+    <link rel="me" href="https://www.facebook.com/profile.php?id=61595619313031">
+    <link rel="me" href="https://www.youtube.com/@try4ever_com">
+    <link rel="me" href="https://www.instagram.com/try4ever_com/">
+    <link rel="me" href="https://x.com/try4everCom">
+    <link rel="me" href="https://www.reddit.com/user/try4ever_com">
+    <link rel="me" href="https://www.linkedin.com/company/143919630/">
+    <link rel="me" href="https://t.me/try4ever_com">
+    <link rel="me" href="https://www.threads.com/@try4ever_com">
+    <link rel="me" href="https://www.pinterest.com/try4evercom/">
+    <link rel="me" href="https://vk.ru/id1101212552">
+    <link rel="me" href="https://vkvideo.ru/@club242546823">
+    <link rel="me" href="https://ok.ru/profile/910712328823">
+    <link rel="me" href="https://www.twitch.tv/try4ever_com">
+    <link rel="me" href="https://www.dailymotion.com/user/try4ever">
+    <link rel="me" href="https://www.tumblr.com/try4ever-com">
+    <link rel="me" href="https://rumble.com/user/try4ever_com">
+    <link rel="me" href="https://bsky.app/profile/try4ever.bsky.social">
+    <link rel="me" href="https://vimeo.com/try4ever">
+    <link rel="me" href="https://kick.com/tryever">
+    <link rel="me" href="https://odysee.com/@try4ever">
+    <meta property="og:see_also" content="https://www.facebook.com/profile.php?id=61595619313031">
+    <meta property="og:see_also" content="https://www.youtube.com/@try4ever_com">
+    <meta property="og:see_also" content="https://www.instagram.com/try4ever_com/">
+    <meta property="og:see_also" content="https://x.com/try4everCom">
+    <meta property="og:see_also" content="https://www.reddit.com/user/try4ever_com">
+    <meta property="og:see_also" content="https://www.linkedin.com/company/143919630/">
+    <meta property="og:see_also" content="https://t.me/try4ever_com">
+    <meta property="og:see_also" content="https://www.threads.com/@try4ever_com">
+    <meta property="og:see_also" content="https://www.pinterest.com/try4evercom/">
+    <meta property="og:see_also" content="https://vk.ru/id1101212552">
+    <meta property="og:see_also" content="https://vkvideo.ru/@club242546823">
+    <meta property="og:see_also" content="https://ok.ru/profile/910712328823">
+    <meta property="og:see_also" content="https://www.twitch.tv/try4ever_com">
+    <meta property="og:see_also" content="https://www.dailymotion.com/user/try4ever">
+    <meta property="og:see_also" content="https://www.tumblr.com/try4ever-com">
+    <meta property="og:see_also" content="https://rumble.com/user/try4ever_com">
+    <meta property="og:see_also" content="https://bsky.app/profile/try4ever.bsky.social">
+    <meta property="og:see_also" content="https://vimeo.com/try4ever">
+    <meta property="og:see_also" content="https://kick.com/tryever">
+    <meta property="og:see_also" content="https://odysee.com/@try4ever">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@try4everCom">
+    <meta name="twitter:title" content="UPSC: The Whole Syllabus, Mapped – Brain">
+    <meta name="twitter:description" content="Prelims, mains, interview – and a syllabus with no natural boundary. Roughly a thousand final selections against applicants in the hundreds of thousands. Structure is the strategy.">
+    <meta name="twitter:image" content="https://try4ever.com/og-image.png">
+    <meta name="twitter:image:alt" content="Brain – a 3D knowledge map of connected study topics on a dark starfield">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%0A%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%230a0c12%22%2F%3E%0A%3Cline%20x1%3D%2216%22%20y1%3D%2216%22%20x2%3D%226%22%20y2%3D%2210%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.5%22%20stroke-width%3D%220.8%22%2F%3E%0A%3Cline%20x1%3D%2216%22%20y1%3D%2216%22%20x2%3D%2226%22%20y2%3D%229%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.5%22%20stroke-width%3D%220.8%22%2F%3E%0A%3Cline%20x1%3D%2216%22%20y1%3D%2216%22%20x2%3D%2210%22%20y2%3D%2226%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.5%22%20stroke-width%3D%220.8%22%2F%3E%0A%3Cline%20x1%3D%2216%22%20y1%3D%2216%22%20x2%3D%2225%22%20y2%3D%2222%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.5%22%20stroke-width%3D%220.8%22%2F%3E%0A%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%226.2%22%20fill%3D%22%232dd4bf%22%2F%3E%0A%3Ccircle%20cx%3D%226%22%20cy%3D%2210%22%20r%3D%224%22%20fill%3D%22%23e11d48%22%2F%3E%0A%3Ccircle%20cx%3D%2226%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22%23eab308%22%2F%3E%0A%3Ccircle%20cx%3D%2210%22%20cy%3D%2226%22%20r%3D%222.9%22%20fill%3D%22%232dd4bf%22%2F%3E%0A%3Ccircle%20cx%3D%2225%22%20cy%3D%2222%22%20r%3D%222.6%22%20fill%3D%22%23eab308%22%2F%3E%0A%3C%2Fsvg%3E">
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,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">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAE9UlEQVR42u2dv6oTQRSH9w6pgo0+QcDKWpC8gA8ggZXb+QwWtvYWPoOdGJD7GiJYWwV8Aztri8ASbpLN7s45M+ec+b7qwg3ZsPPNb/7s7Mzd+smzDuASiVsAyAHIAcgByAHIAcgByAHIAcgByAGAHIAcgByAHIAcgByAHIAcgByAHADIAcgByAHIAcgByAHIAcgByAHNsOIWWObP138j/93cr1Wvfsf+HO6cKGYJcvjWQlUR5IighZIidEhDmSH7VerJ8fvpq5H/vvj7EzMEi1M2P7TkGHcCS1TNkPJDXo65WrSsiJ4ZIn5IypGjRYOKaJuR70eyZobsVzVuRuaFks3ijO1HMTMyL5fMFmQL+WGcZLkIQ/pRODZyLpqMFx754TI5ihVbJD+qxMbiSycXBUZ+uOxzAHLUr8cBwqNim7LsB5AcICdHxRpMz4M+ByAHBJOjerDTspAcgByAHIAcEI2mX4d8/uP7zc8ctjupy23u13UnSecuGVwhxPTPC4pCcvjW4to3tKPIvNXnFqYZFqxNz9dCsLmp1bIsWIa+Ii1IEZnkqB4e02NDT4v8FCkfHsveXkkEhrvLFSNhRvmLfnh4Zz82umWvQ9ZqWW62KRZq8HgT0/f98PenN18smxEqOYxk+8jPGMzY7/f7/V57R68u+0XqpFGDy8eGqVb/4o85NUOq8FTN8JQcp4Hsi77vL5qh6kflzVtK9jw+vt4Mf5/fX5uDhWPnY0QLvcGtlHBZ+3OU8WNoUE7DY7jXloeRLz9/m2KGrB+CUZS7eYu2H+ddjdO6aH+CoeT8mMWtJvX8uNYJHfz49f5tMDmWKWJ6k1oNP1zMauj5McUS7cHwSqogZf1gC8oyxV9oKCtYnFO+ytHjDL9PXlbi1Z2tJsPgcpNaj3XR48oPrcU+Q2GzvTXJQRMeMDx4bwWQA5AD2pXD9WpNdz+e5ADkAOQA5ADkAOQA5ADkAOQA5ADkAPAuh+uddFjPASQHIAcgBy03P5vkgPByuKuFTtOO5IBwcjiqi37nZkgOiCiHixrpekqX5NDF7yaIncd3ZR8RZsO4gWu7+ZTfyMW9HJ2TrSanKDJlK7CSikSQw6Afj7oaN3cjNbJDHH2OCgxOnO5mvNiMrtSJLUGSw1R4jIxQziPE1MajYeXoPByp0UmfqqHqRyg56ioya0qj73up81b0/AjY56gy7zT3orMGt7WI2SEt7MeCywn2KPU6p2FHK4ftbpiDUr1K4NNDA/Y5zscFpg4dVqrrGj2P4IcOH5v2Y0FKKdLOceUx5bj4uCtfkXa0iJ8cF0cEpwU8RZTWhAgux/Sn5C0XfIujlYkH7kG7Q1nMQI7lDQo0mhz2Y0N8TkLp8YqDDum1McW1BTUghd0Z0ukTEoftzmM/1OApwz6alVlTVcOH6YcGT46mZjDzw0N1sU8KY0bn8MyKzKLVXiaYwpjRmh8FFqCnSGa040eZVxOCP7L35QcvNRWq634fqvE6ZIlWgIeuoUYrgByAHLVHFq7PGUUOQA5ADkAOQA5ADm4BIAd4k0N1hpvpc5IDkAMalEMp/GlTgiSHeEFiBs0KtCGHYF0nNgImh0ihYkbYZiWzaDFDFqPvys5dp4MWDXVIZxU2ZrSVHFNSBCeQA2hWADkAOQA5ADkAOQCQA5ADkAOQA5ADkAOQA5ADkAOQAwA5ADkAOQA5oBj/AY//2wG/XJdjAAAAAElFTkSuQmCC">
+
+    <style>
+        /* Design tokens — dark defaults, light overrides below (html[data-theme="light"]). */
+        :root {
+            --bg: #0a0c12;
+            --text: #ddd;
+            --heading: #fff;
+            --dim: #aaa;
+            --muted: #98a2b3;
+            --soft: #bbb;
+            --accent: #2dd4bf;
+            --accent-rgb: 45, 212, 191;
+            --accent-ink: #000;
+            --accent-hover: #14b8a6;
+            --card: #222;
+            --card-border: #444;
+            --divider: #333;
+            --chip: #161a24;
+            --chip-border: #2a3040;
+            --chip-hover: #1b2230;
+            --chip-ink: #c9cede;
+            --effective: #8b93a3;
+            --trust-ink: #bcd8d3;
+            --control-border: #666;
+        }
+        html[data-theme="light"] {
+            --bg: #f2f5fa;
+            --text: #242b3a;
+            --heading: #10182a;
+            --dim: #5b6577;
+            --muted: #64748b;
+            --soft: #3a4356;
+            --accent: #0d9488;
+            --accent-rgb: 13, 148, 136;
+            --accent-ink: #ffffff;
+            --accent-hover: #0f766e;
+            --card: #ffffff;
+            --card-border: #d7deea;
+            --divider: #dde3ee;
+            --chip: #ffffff;
+            --chip-border: #d7deea;
+            --chip-hover: #e8f5f3;
+            --chip-ink: #3d4a5c;
+            --effective: #64748b;
+            --trust-ink: #0f766e;
+            --control-border: #b6c0d0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+        }
+        #stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+        #network-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.25;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            background: var(--accent);
+            color: var(--accent-ink);
+            padding: 8px 14px;
+            border-radius: 0 0 6px 0;
+            font-weight: bold;
+            z-index: 100;
+        }
+        .skip-link:focus { left: 0; }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        header {
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        header .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        nav li { display: inline; }
+        nav a {
+            color: var(--dim);
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: color .2s, background .2s;
+        }
+        nav a:hover {
+            color: var(--heading);
+            background: rgba(var(--accent-rgb), .13);
+        }
+        nav a.active {
+            color: var(--heading);
+            background: rgba(var(--accent-rgb), .2);
+            border-bottom: 2px solid var(--accent);
+        }
+        nav a.open-app {
+            background: var(--accent);
+            color: var(--accent-ink);
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 4px;
+        }
+        nav a.open-app:hover {
+            background: var(--accent-hover);
+            color: var(--accent-ink);
+        }
+        .theme-toggle {
+            background: var(--chip);
+            border: 1px solid var(--chip-border);
+            color: var(--chip-ink);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color .15s, transform .15s, color .15s;
+        }
+        .theme-toggle:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+        .theme-toggle svg { width: 16px; height: 16px; fill: currentColor; }
+        html[data-theme="light"] .theme-toggle .i-sun { display: none; }
+        html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
+        .hero {
+            text-align: left;
+            margin-bottom: 50px;
+        }
+        .hero h1 {
+            font-size: 40px;
+            color: var(--heading);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 18px;
+            color: var(--dim);
+            max-width: 600px;
+        }
+        .trust-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .trust-strip span {
+            border: 1px solid rgba(var(--accent-rgb), .27);
+            color: var(--trust-ink);
+            background: rgba(var(--accent-rgb), .05);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 13px;
+        }
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--accent-ink);
+            padding: 12px 24px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: background .2s;
+        }
+        .btn:hover { background: var(--accent-hover); }
+        .btn-ghost {
+            display: inline-block;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            background: transparent;
+            padding: 12px 24px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .btn-ghost:hover { background: rgba(var(--accent-rgb), .13); }
+        .section {
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--divider);
+            padding-bottom: 30px;
+        }
+        .section:last-of-type { border-bottom: none; }
+        .page-title {
+            color: var(--heading);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 8px;
+            display: inline-block;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .section p {
+            max-width: 720px;
+        }
+        .how-steps { margin-top: 20px; }
+        .how-steps .step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+        }
+        .how-steps .step-num {
+            background: var(--accent);
+            color: var(--accent-ink);
+            font-weight: bold;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .feature {
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 15px;
+            background-color: var(--card);
+            transition: border-color .2s, box-shadow .2s, transform .2s;
+        }
+        .feature:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(var(--accent-rgb), .12); }
+        .feature h3 {
+            color: var(--accent);
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .feature h3 .fi { margin-right: 4px; }
+        .feature p {
+            font-size: 13px;
+            color: var(--soft);
+            margin-bottom: 0;
+        }
+        .faq-item { margin-bottom: 16px; }
+        .faq-item strong { color: var(--text); }
+        .faq-item p {
+            margin: 4px 0 0;
+            color: var(--dim);
+            font-size: 14px;
+            max-width: 720px;
+        }
+        .legal-body h3 { color: var(--heading); font-size: 17px; margin: 22px 0 6px; }
+        .legal-body p, .legal-body li { color: var(--soft); font-size: 15px; max-width: 760px; }
+        .legal-body .effective { color: var(--effective); font-size: 13px; }
+        .post-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .post-list li {
+            border-bottom: 1px solid var(--divider);
+            padding: 14px 0;
+        }
+        .post-list a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            display: block;
+        }
+        .post-list a:hover { color: var(--accent); }
+        .post-excerpt {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+        .post-meta {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+        .post-content {
+            background: var(--card);
+            border: 1px solid var(--divider);
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .post-content h2 { color: var(--heading); margin-top: 26px; }
+        .post-content h3 {
+            color: var(--heading);
+            border-bottom: none;
+            font-size: 22px;
+            margin-top: 0;
+        }
+        .post-content a { color: var(--accent); }
+        .post-content p { margin-bottom: 12px; }
+        .post-title {
+            color: var(--heading);
+            font-size: 30px;
+            line-height: 1.25;
+            margin: 10px 0 4px;
+        }
+        .post-meta-line {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .tag-chip {
+            display: inline-block;
+            border: 1px solid rgba(var(--accent-rgb), .27);
+            background: rgba(var(--accent-rgb), .05);
+            color: var(--trust-ink);
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+        .post-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 26px;
+            flex-wrap: wrap;
+        }
+        .post-nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            max-width: 48%;
+        }
+        .post-nav a:hover { text-decoration: underline; }
+        .post-nav .spacer { flex: 1; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 10px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .no-posts {
+            color: var(--muted);
+            font-style: italic;
+            padding: 20px 0;
+        }
+        .error-code {
+            font-size: 72px;
+            color: var(--accent);
+            font-weight: bold;
+            letter-spacing: 6px;
+            margin-top: 10px;
+            line-height: 1;
+        }
+        .recovery-box {
+            border: 1px solid rgba(var(--accent-rgb), .33);
+            background: rgba(var(--accent-rgb), .05);
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin: 16px 0;
+        }
+        .recovery-box .rb-title {
+            color: var(--heading);
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .recovery-box a {
+            color: var(--accent);
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        .recovery-box a:hover { text-decoration: underline; }
+        .recovery-box .sg-path {
+            color: var(--muted);
+            font-size: 12px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .countdown-line {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+        .countdown-line button {
+            background: none;
+            border: 1px solid var(--control-border);
+            color: var(--dim);
+            border-radius: 4px;
+            padding: 2px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        .countdown-line button:hover { border-color: var(--accent); color: var(--accent); }
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 40px;
+        }
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        footer a:hover { text-decoration: underline; }
+        footer .legal-links { margin-top: 8px; }
+        footer .legal-links a { margin: 0 6px; }
+        footer .social-links {
+            margin: 16px auto 4px; display: flex; flex-wrap: wrap; justify-content: center;
+            align-items: center; gap: 8px; max-width: 680px;
+        }
+        footer .social-links .social-label { color: var(--muted); margin-right: 4px; }
+        footer .soc {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--chip); border: 1px solid var(--chip-border);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+            transition: border-color .18s, background .18s, transform .18s, box-shadow .18s;
+        }
+        footer .soc:hover, footer .soc:focus-visible {
+            border-color: var(--accent); background: var(--chip-hover);
+            transform: translateY(-3px) scale(1.06);
+            box-shadow: 0 6px 16px rgba(var(--accent-rgb), .25);
+        }
+        footer .soc svg { width: 18px; height: 18px; fill: var(--chip-ink); transition: fill .18s; }
+        footer .soc:hover svg, footer .soc:focus-visible svg { fill: var(--accent); }
+        footer .op-line { margin-top: 8px; color: var(--muted); }
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 28px; }
+            .features { grid-template-columns: 1fr; }
+            nav ul { gap: 4px; }
+            nav a { font-size: 14px; padding: 7px 10px; }
+            .btn-ghost { margin-left: 0; }
+            .post-title { font-size: 24px; }
+            .error-code { font-size: 54px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <canvas id="stars" aria-hidden="true"></canvas>
+    <div id="network-bg" aria-hidden="true">
+        <svg width="100%" height="100%">
+            <line x1="50%" y1="50%" x2="30%" y2="30%" stroke="#2dd4bf" stroke-width="1" opacity="0.5"/>
+            <line x1="50%" y1="50%" x2="70%" y2="35%" stroke="#94a3b8" stroke-width="1" opacity="0.5"/>
+            <line x1="30%" y1="30%" x2="20%" y2="50%" stroke="#f43f5e" stroke-width="1" opacity="0.5"/>
+            <line x1="30%" y1="30%" x2="45%" y2="15%" stroke="#eab308" stroke-width="1" opacity="0.5"/>
+            <line x1="70%" y1="35%" x2="85%" y2="55%" stroke="#2dd4bf" stroke-width="1" opacity="0.5"/>
+            <line x1="50%" y1="50%" x2="40%" y2="70%" stroke="#eab308" stroke-width="1" opacity="0.5"/>
+            <line x1="40%" y1="70%" x2="25%" y2="85%" stroke="#e11d48" stroke-width="1" opacity="0.5"/>
+            <line x1="50%" y1="50%" x2="65%" y2="75%" stroke="#2dd4bf" stroke-width="1" opacity="0.5"/>
+            <circle cx="50%" cy="50%" r="12" fill="#e11d48"/>
+            <circle cx="30%" cy="30%" r="10" fill="#eab308"/>
+            <circle cx="70%" cy="35%" r="10" fill="#2dd4bf"/>
+            <circle cx="20%" cy="50%" r="8" fill="#e11d48"/>
+            <circle cx="45%" cy="15%" r="6" fill="#2dd4bf"/>
+            <circle cx="85%" cy="55%" r="8" fill="#eab308"/>
+            <circle cx="40%" cy="70%" r="9" fill="#2dd4bf"/>
+            <circle cx="25%" cy="85%" r="7" fill="#e11d48"/>
+            <circle cx="65%" cy="75%" r="8" fill="#eab308"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <header>
+            <a href="/" class="logo" aria-label="Brain – home">
+                <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                    <circle cx="16" cy="16" r="6" fill="#2dd4bf"/>
+                    <circle cx="6" cy="10" r="4" fill="#e11d48"/>
+                    <circle cx="26" cy="8" r="4" fill="#eab308"/>
+                    <circle cx="10" cy="26" r="3" fill="#2dd4bf"/>
+                    <line x1="16" y1="16" x2="6" y2="10" stroke="white" stroke-width="0.5" opacity="0.5"/>
+                    <line x1="16" y1="16" x2="26" y2="8" stroke="white" stroke-width="0.5" opacity="0.5"/>
+                    <line x1="6" y1="10" x2="10" y2="26" stroke="white" stroke-width="0.5" opacity="0.5"/>
+                </svg>
+                <span>Brain</span>
+            </a>
+            <nav aria-label="Main navigation">
+                <ul>
+                    <li><a href="/how/" data-route="how">How</a></li>
+                    <li><a href="/features/" data-route="features">Features</a></li>
+                    <li><a href="/about/" data-route="about">About</a></li>
+                    <li><a href="/faq/" data-route="faq">FAQ</a></li>
+                    <li><a href="/blog/" data-route="blog" class="active" aria-current="page">Blog</a></li>
+                    <li><button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch between dark and light mode" title="Switch theme (follows your system by default)">
+                        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.3 22c-4.9 0-8.8-3.9-8.8-8.8 0-4.2 2.9-7.8 6.9-8.6.4-.1.7.1.9.4.1.4 0 .7-.3.9-1.4 1.1-2.2 2.8-2.2 4.7 0 3.3 2.7 6 6 6 1.9 0 3.6-.8 4.7-2.2.2-.3.6-.4.9-.3.3.1.5.5.4.9-.9 4-4.4 6.9-8.5 7h0zm0 0z"/></svg>
+                        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 17c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8.5c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5zM12 4.5c-.4 0-.8-.3-.8-.8V1.8c0-.4.3-.8.8-.8s.8.3.8.8v1.9c-.1.5-.4.8-.8.8zm0 18.5c-.4 0-.8-.3-.8-.8v-1.9c0-.4.3-.8.8-.8s.8.3.8.8v1.9c-.1.5-.4.8-.8.8zM22.2 12.8h-1.9c-.4 0-.8-.3-.8-.8s.3-.8.8-.8h1.9c.4 0 .8.3.8.8s-.4.8-.8.8zM3.7 12.8H1.8c-.4 0-.8-.3-.8-.8s.3-.8.8-.8h1.9c.4 0 .8.3.8.8s-.4.8-.8.8zM19.4 5.4c-.2 0-.4-.1-.5-.2l-1.3-1.3c-.3-.3-.3-.8 0-1.1.3-.3.8-.3 1.1 0l1.3 1.3c.3.3.3.8 0 1.1-.2.1-.4.2-.6.2zM6 18.8c-.2 0-.4-.1-.5-.2l-1.3-1.3c-.3-.3-.3-.8 0-1.1.3-.3.8-.3 1.1 0l1.3 1.3c.3.3.3.8 0 1.1-.1.1-.3.2-.6.2zm13.4 0c-.2 0-.4-.1-.5-.2-.3-.3-.3-.8 0-1.1l1.3-1.3c.3-.3.8-.3 1.1 0 .3.3.3.8 0 1.1l-1.3 1.3c-.2.1-.4.2-.6.2zM5.9 5.4c-.2 0-.4-.1-.5-.2-.3-.3-.3-.8 0-1.1l1.3-1.3c.3-.3.8-.3 1.1 0 .3.3.3.8 0 1.1L6.5 5.2c-.2.1-.4.2-.6.2z"/></svg>
+                    </button></li>
+                    <li><a href="https://brain.try4ever.com" class="open-app" target="_blank" rel="noopener">Open App</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main id="main">
+<div class="section">
+    <a class="back-link" href="/blog/">← Back to blog</a>
+    <article>
+        <h1 class="post-title">UPSC: The Whole Syllabus, Mapped</h1>
+        <div class="post-meta-line">2026-10-30 · <em>by try4ever</em></div>
+        <div class="post-meta-line"><span class="tag-chip">UPSC</span><span class="tag-chip">civil services</span><span class="tag-chip">IAS</span><span class="tag-chip">India</span></div>
+        <div class="post-content">
+<h2>The notification says 'optional subject: one.' Nothing else is optional.</h2><p>The UPSC Civil Services Examination is prelims, then mains with its essay and general studies papers, then the interview – usually a year per full attempt, with a syllabus spanning history, polity, economy, geography, environment, ethics, science and current affairs that never stops moving. Roughly a thousand candidates are finally selected out of applicants counted in the hundreds of thousands. Nobody clears this exam on talent. They clear it on <em>coverage</em>.</p><h2>Why toppers' notes are always structural</h2><p>Ask a topper and you'll find maps everywhere: polity as articles and amendments in relationship, economy as linked sectors, geography feeding environment feeding disaster management. The syllabus is too big for linear reading to survive a year of decay. A 3D map makes the structure visible to everyone – each GS paper a territory, static syllabus as the spine, current affairs attaching themselves to it instead of piling up in a separate folder.</p><h2>The a-b-c-d for aspirants</h2><p><strong>a)</strong> Upload your NCERTs, standard reference book chapters and your own notes to <a href='https://brain.try4ever.com'>Brain</a> – mapped on your device in minutes.<br><strong>b)</strong> Generate quizzes per subject and paper; grade honestly, prelims MCQs included.<br><strong>c)</strong> Red nodes are the topics that resurface every attempt and never stick – fix them before the next notification, not after.<br><strong>d)</strong> One map carries prelims to mains: the same spine serves facts in May and analysis in September.</p><h2>Quick answers</h2><p><strong>Can I upload my coaching institute's material?</strong><br>Your files are processed on your own device and never uploaded to anyone. Your sources, your strategy, your preparation – they stay yours.</p><p><strong>Current affairs move faster than any map.</strong><br>Which is why the map holds the <em>static</em> syllabus – the part that decays across a year – and current affairs hook onto their static anchors. News gets dated; the polity behind the news doesn't.</p><p><a href='https://brain.try4ever.com'>Map the syllabus</a> – apply free, study tonight. The list rewards coverage; see yours.</p>
+        </div>
+    </article>
+    <nav class="post-nav" aria-label="Post navigation"><a href="/blog/anatomy-physiology-prereqs/" rel="prev">← Older: Anatomy &amp; Physiology: The Gauntlet</a><span class="spacer"></span><a href="/blog/gaokao-three-years-map/" rel="next">Newer: Gaokao: Three Years, One Map →</a></nav>
+</div>
+        </main>
+
+        <footer>
+            <p>© 2026 try4ever · Brain is a solo-built study tool · App: <a href="https://brain.try4ever.com" target="_blank" rel="noopener">brain.try4ever.com</a> · <a href="mailto:support@try4ever.com">support@try4ever.com</a></p>
+            <p class="legal-links">
+                <a href="/terms/">Terms</a>·<a href="/privacy/">Privacy</a>·<a href="/refund/">Refunds</a>·<a href="/about/">About &amp; contact</a>
+            </p>
+            <div class="social-links" aria-label="Official try4ever profiles"><span class="social-label">Find us:</span><a class="soc" href="https://www.facebook.com/profile.php?id=61595619313031" target="_blank" rel="noopener" aria-label="try4ever on Facebook" title="try4ever on Facebook"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a><a class="soc" href="https://www.youtube.com/@try4ever_com" target="_blank" rel="noopener" aria-label="try4ever on YouTube" title="try4ever on YouTube"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a><a class="soc" href="https://www.instagram.com/try4ever_com/" target="_blank" rel="noopener" aria-label="try4ever on Instagram" title="try4ever on Instagram"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a><a class="soc" href="https://x.com/try4everCom" target="_blank" rel="noopener" aria-label="try4ever on X (Twitter)" title="try4ever on X (Twitter)"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a><a class="soc" href="https://www.reddit.com/user/try4ever_com" target="_blank" rel="noopener" aria-label="try4ever on Reddit" title="try4ever on Reddit"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485l-2.286 2.286C.775 23.225 1.097 24 1.738 24H12c6.627 0 12-5.373 12-12S18.627 0 12 0Zm4.388 3.199c1.104 0 1.999.895 1.999 1.999 0 1.105-.895 2-1.999 2-.946 0-1.739-.657-1.947-1.539v.002c-1.147.162-2.032 1.15-2.032 2.341v.007c1.776.067 3.4.567 4.686 1.363.473-.363 1.064-.58 1.707-.58 1.547 0 2.802 1.254 2.802 2.802 0 1.117-.655 2.081-1.601 2.531-.088 3.256-3.637 5.876-7.997 5.876-4.361 0-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538 0-1.548 1.255-2.802 2.803-2.802.645 0 1.239.218 1.712.585 1.275-.79 2.881-1.291 4.64-1.365v-.01c0-1.663 1.263-3.034 2.88-3.207.188-.911.993-1.595 1.959-1.595Zm-8.085 8.376c-.784 0-1.459.78-1.506 1.797-.047 1.016.64 1.429 1.426 1.429.786 0 1.371-.369 1.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406 0c-.786 0-1.385.824-1.338 1.841.047 1.017.634 1.385 1.418 1.385.785 0 1.473-.413 1.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703 4.013c-.974 0-1.907.048-2.77.135-.147.015-.241.168-.183.305.483 1.154 1.622 1.964 2.953 1.964 1.33 0 2.47-.81 2.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z"/></svg></a><a class="soc" href="https://www.linkedin.com/company/143919630/" target="_blank" rel="noopener" aria-label="try4ever on LinkedIn" title="try4ever on LinkedIn"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a><a class="soc" href="https://t.me/try4ever_com" target="_blank" rel="noopener" aria-label="try4ever on Telegram" title="try4ever on Telegram"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a><a class="soc" href="https://www.threads.com/@try4ever_com" target="_blank" rel="noopener" aria-label="try4ever on Threads" title="try4ever on Threads"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg></a><a class="soc" href="https://www.pinterest.com/try4evercom/" target="_blank" rel="noopener" aria-label="try4ever on Pinterest" title="try4ever on Pinterest"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg></a><a class="soc" href="https://vk.ru/id1101212552" target="_blank" rel="noopener" aria-label="try4ever on VK" title="try4ever on VK"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="m9.489.004.729-.003h3.564l.73.003.914.01.433.007.418.011.403.014.388.016.374.021.36.025.345.03.333.033c1.74.196 2.933.616 3.833 1.516.9.9 1.32 2.092 1.516 3.833l.034.333.029.346.025.36.02.373.025.588.012.41.013.644.009.915.004.98-.001 3.313-.003.73-.01.914-.007.433-.011.418-.014.403-.016.388-.021.374-.025.36-.03.345-.033.333c-.196 1.74-.616 2.933-1.516 3.833-.9.9-2.092 1.32-3.833 1.516l-.333.034-.346.029-.36.025-.373.02-.588.025-.41.012-.644.013-.915.009-.98.004-3.313-.001-.73-.003-.914-.01-.433-.007-.418-.011-.403-.014-.388-.016-.374-.021-.36-.025-.345-.03-.333-.033c-1.74-.196-2.933-.616-3.833-1.516-.9-.9-1.32-2.092-1.516-3.833l-.034-.333-.029-.346-.025-.36-.02-.373-.025-.588-.012-.41-.013-.644-.009-.915-.004-.98.001-3.313.003-.73.01-.914.007-.433.011-.418.014-.403.016-.388.021-.374.025-.36.03-.345.033-.333c.196-1.74.616-2.933 1.516-3.833.9-.9 2.092-1.32 3.833-1.516l.333-.034.346-.029.36-.025.373-.02.588-.025.41-.012.644-.013.915-.009ZM6.79 7.3H4.05c.13 6.24 3.25 9.99 8.72 9.99h.31v-3.57c2.01.2 3.53 1.67 4.14 3.57h2.84c-.78-2.84-2.83-4.41-4.11-5.01 1.28-.74 3.08-2.54 3.51-4.98h-2.58c-.56 1.98-2.22 3.78-3.8 3.95V7.3H10.5v6.92c-1.6-.4-3.62-2.34-3.71-6.92Z"/></svg></a><a class="soc" href="https://vkvideo.ru/@club242546823" target="_blank" rel="noopener" aria-label="try4ever on VK Video" title="try4ever on VK Video"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="m9.489.004.729-.003h3.564l.73.003.914.01.433.007.418.011.403.014.388.016.374.021.36.025.345.03.333.033c1.74.196 2.933.616 3.833 1.516.9.9 1.32 2.092 1.516 3.833l.034.333.029.346.025.36.02.373.025.588.012.41.013.644.009.915.004.98-.001 3.313-.003.73-.01.914-.007.433-.011.418-.014.403-.016.388-.021.374-.025.36-.03.345-.033.333c-.196 1.74-.616 2.933-1.516 3.833-.9.9-2.092 1.32-3.833 1.516l-.333.034-.346.029-.36.025-.373.02-.588.025-.41.012-.644.013-.915.009-.98.004-3.313-.001-.73-.003-.914-.01-.433-.007-.418-.011-.403-.014-.388-.016-.374-.021-.36-.025-.345-.03-.333-.033c-1.74-.196-2.933-.616-3.833-1.516-.9-.9-1.32-2.092-1.516-3.833l-.034-.333-.029-.346-.025-.36-.02-.373-.025-.588-.012-.41-.013-.644-.009-.915-.004-.98.001-3.313.003-.73.01-.914.007-.433.011-.418.014-.403.016-.388.021-.374.025-.36.03-.345.033-.333c.196-1.74.616-2.933 1.516-3.833.9-.9 2.092-1.32 3.833-1.516l.333-.034.346-.029.36-.025.373-.02.588-.025.41-.012.644-.013.915-.009ZM6.79 7.3H4.05c.13 6.24 3.25 9.99 8.72 9.99h.31v-3.57c2.01.2 3.53 1.67 4.14 3.57h2.84c-.78-2.84-2.83-4.41-4.11-5.01 1.28-.74 3.08-2.54 3.51-4.98h-2.58c-.56 1.98-2.22 3.78-3.8 3.95V7.3H10.5v6.92c-1.6-.4-3.62-2.34-3.71-6.92Z"/></svg></a><a class="soc" href="https://ok.ru/profile/910712328823" target="_blank" rel="noopener" aria-label="try4ever on OK.ru" title="try4ever on OK.ru"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M12 0a6.2 6.2 0 0 0-6.194 6.195 6.2 6.2 0 0 0 6.195 6.192 6.2 6.2 0 0 0 6.193-6.192A6.2 6.2 0 0 0 12.001 0zm0 3.63a2.567 2.567 0 0 1 2.565 2.565 2.568 2.568 0 0 1-2.564 2.564 2.568 2.568 0 0 1-2.565-2.564 2.567 2.567 0 0 1 2.565-2.564zM6.807 12.6a1.814 1.814 0 0 0-.91 3.35 11.611 11.611 0 0 0 3.597 1.49l-3.462 3.463a1.815 1.815 0 0 0 2.567 2.566L12 20.066l3.405 3.403a1.813 1.813 0 0 0 2.564 0c.71-.709.71-1.858 0-2.566l-3.462-3.462a11.593 11.593 0 0 0 3.596-1.49 1.814 1.814 0 1 0-1.932-3.073 7.867 7.867 0 0 1-8.34 0c-.318-.2-.674-.29-1.024-.278z"/></svg></a><a class="soc" href="https://www.twitch.tv/try4ever_com" target="_blank" rel="noopener" aria-label="try4ever on Twitch" title="try4ever on Twitch"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg></a><a class="soc" href="https://www.dailymotion.com/user/try4ever" target="_blank" rel="noopener" aria-label="try4ever on Dailymotion" title="try4ever on Dailymotion"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M21.823 7.327a11.928 11.928 0 0 0-2.606-3.814 12.126 12.126 0 0 0-3.866-2.57A12.246 12.246 0 0 0 10.617 0H1.831a.602.602 0 0 0-.609.603v3.764c0 .162.064.312.179.426l4.164 4.123a.612.612 0 0 0 .439.177h4.56c.806 0 1.56.313 2.125.88.557.559.856 1.296.843 2.075-.029 1.571-1.343 2.849-2.931 2.849h-6.74a.613.613 0 0 0-.432.176.619.619 0 0 0-.178.427v3.764c0 .162.063.312.178.427l4.139 4.099a.647.647 0 0 0 .476.21h2.572a12.276 12.276 0 0 0 4.733-.945 12.145 12.145 0 0 0 3.866-2.571 11.959 11.959 0 0 0 2.607-3.813c.633-1.479.956-3.051.956-4.67 0-1.619-.321-3.19-.956-4.669l.001-.005ZM2.441 4.118V1.982l2.945 2.755.001 2.297-2.946-2.916Zm4.975 17.813-2.945-2.917v-2.137l2.945 2.755v2.299Zm-2.004-5.832h5.19c2.248 0 4.107-1.807 4.147-4.03a4.027 4.027 0 0 0-1.192-2.937 4.203 4.203 0 0 0-2.996-1.239H6.606V5.216h3.996c1.831 0 3.553.706 4.849 1.986a6.724 6.724 0 0 1-.152 9.736 6.875 6.875 0 0 1-4.697 1.84H8.275L5.412 16.1v-.001Zm15.289.1a10.753 10.753 0 0 1-2.345 3.431 10.91 10.91 0 0 1-3.48 2.314 11.018 11.018 0 0 1-4.26.847H8.633v-2.814h1.916c2.145 0 4.161-.802 5.675-2.254a7.88 7.88 0 0 0 2.451-5.728c0-2.177-.87-4.21-2.451-5.728-1.514-1.454-3.528-2.254-5.675-2.254h-4.16L3.383 1.202h7.234c1.479 0 2.911.285 4.259.847a10.957 10.957 0 0 1 3.48 2.313 10.769 10.769 0 0 1 2.345 3.432c.571 1.33.86 2.743.86 4.202 0 1.46-.289 2.873-.86 4.203Z"/></svg></a><a class="soc" href="https://www.tumblr.com/try4ever-com" target="_blank" rel="noopener" aria-label="try4ever on Tumblr" title="try4ever on Tumblr"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg></a><a class="soc" href="https://rumble.com/user/try4ever_com" target="_blank" rel="noopener" aria-label="try4ever on Rumble" title="try4ever on Rumble"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M14.4528 13.5458c.8064-.6542.9297-1.8381.2756-2.6445a1.8802 1.8802 0 0 0-.2756-.2756 21.2127 21.2127 0 0 0-4.3121-2.776c-1.066-.51-2.256.2-2.4261 1.414a23.5226 23.5226 0 0 0-.14 5.5021c.116 1.23 1.292 1.964 2.372 1.492a19.6285 19.6285 0 0 0 4.5062-2.704v-.008zm6.9322-5.4002c2.0335 2.228 2.0396 5.637.014 7.8723A26.1487 26.1487 0 0 1 8.2946 23.846c-2.6848.6713-5.4168-.914-6.1662-3.5781-1.524-5.2002-1.3-11.0803.17-16.3045.772-2.744 3.3521-4.4661 6.0102-3.832 4.9242 1.174 9.5443 4.196 13.0764 8.0121v.002z"/></svg></a><a class="soc" href="https://bsky.app/profile/try4ever.bsky.social" target="_blank" rel="noopener" aria-label="try4ever on Bluesky" title="try4ever on Bluesky"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z"/></svg></a><a class="soc" href="https://vimeo.com/try4ever" target="_blank" rel="noopener" aria-label="try4ever on Vimeo" title="try4ever on Vimeo"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2898 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.378-1.8809 1.132l-1.129-1.457a315.06 315.06 0 003.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4929 4.7969z"/></svg></a><a class="soc" href="https://kick.com/tryever" target="_blank" rel="noopener" aria-label="try4ever on Kick" title="try4ever on Kick"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M1.333 0h8v5.333H12V2.667h2.667V0h8v8H20v2.667h-2.667v2.666H20V16h2.667v8h-8v-2.667H12v-2.666H9.333V24h-8Z"/></svg></a><a class="soc" href="https://odysee.com/@try4ever" target="_blank" rel="noopener" aria-label="try4ever on Odysee" title="try4ever on Odysee"><svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><path d="M11.965 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12 12 12 0 0 0-3.209-8.167 7.272 7.272 0 0 1-.799 3.218c-.548.957-2.281 2.77-3.264 3.699a.723.723 0 0 0 .056 1.104c.996.74 2.658 2.151 2.788 3.422.176 1.835 1.6 4.02 1.675 4.159a.67.67 0 0 1-.105.327 12.067 12.067 0 0 1-2.03 1.898 2.435 2.435 0 0 1-.807.126c-1.944-.04-1.526-1.866-1.712-2.905s-.78-3.085-2.716-2.788c0 0 .484 4.243-1.489 5.546s-5.843 2.27-6.55-.408 2.46-2.384 2.684-2.384c.223 0 2.233-.632 1.267-2.53-.967-1.898-2.01-3.5-2.01-3.5a11.37 11.37 0 0 0-2.735 1.285 5.42 5.42 0 0 0-1.061.82c-1.065 1.104-2.19 1.713-2.954 1.358a1.368 1.368 0 0 1-.32-.221A11.926 11.926 0 0 1 .1 13.503c.43-.641 2.082-2.038 3.696-2.906 1.304-.702 2.737-.988 3.118-1.355-.671-2.235-1.882-5.703.832-7.33C9.881.634 12.69-.142 13.77 2.958c1.08 3.1.802 3.796 1.267 3.796.465 0 1.608.223 2.09-1.75.356-1.445.574-2.685 1.379-3.087A12 12 0 0 0 12 0a12 12 0 0 0-.035 0zm-.498 2.125c-.353-.019-.78.05-1.303.224 0 0-1.895.52-1.749 2.53.13 1.777 1.08 2.753 3.053 2.01 1.972-.737 2.31-1.264 1.824-2.753-.364-1.117-.765-1.956-1.825-2.011zm.48.726a.249.249 0 0 1 .183.07 1.58 1.58 0 0 1 .232.346.253.253 0 0 1-.197.37.253.253 0 0 1-.233-.131 1.559 1.559 0 0 0-.148-.232.256.256 0 0 1 0-.353.249.249 0 0 1 .163-.07zm3.529.152a.22.22 0 0 1 .192.103.22.22 0 0 1-.07.305.22.22 0 1 1-.122-.408zM12.609 4.27a.253.253 0 0 1 .227.133 1.5 1.5 0 0 1 .102.982.253.253 0 0 1-.246.205h-.049a.253.253 0 0 1-.2-.295 1.013 1.013 0 0 0-.071-.697.253.253 0 0 1 .237-.328zm-8.035.552a.12.12 0 0 1 .029.003.12.12 0 1 1-.147.091.12.12 0 0 1 .118-.094zm15.77 3.419.273.539.593.12-.539.275-.123.592-.272-.539-.592-.123.538-.272zm-17.767.535a.22.22 0 0 1 .193.104.22.22 0 0 1-.07.304.22.22 0 1 1-.123-.408zm16.004 2.79a.258.258 0 0 1 .062.007.258.258 0 1 1-.31.195.258.258 0 0 1 .248-.202zM4.914 16.115a.17.17 0 0 1 .165.14.17.17 0 0 1-.137.197.17.17 0 1 1-.028-.337zm9.769 4.094a.2.2 0 0 1 .036.004.2.2 0 1 1-.233.15.2.2 0 0 1 .197-.154z"/></svg></a></div>
+            <p class="op-line">Operated from Arizona, USA · Payments secured by Stripe · Free plan by application – no card</p>
+        </footer>
+    </div>
+
+    <script>
+        // Backward compatibility with the site's earlier URL schemes:
+        // - /?tg=<original path>  (old 404.html router handoff links)
+        // - /#/blog/<slug> ...    (first-generation hash-router links)
+        // Both are redirected client-side to the matching real page.
+        (function () {
+            try {
+                var t = new URLSearchParams(window.location.search).get('tg');
+                var h = window.location.hash;
+                if ((!t || t.charAt(0) !== '/') && h && h.indexOf('#/') === 0) {
+                    t = h.slice(1);
+                }
+                if (t && t.charAt(0) === '/' && t.charAt(1) !== '/') {
+                    window.location.replace(t);
+                }
+            } catch (e) { /* decorative – never block the page */ }
+        })();
+
+        // Starfield (static when the visitor prefers reduced motion)
+        // Star color follows the theme: white stars in dark mode, slate in light.
+        try {
+            var canvas = document.getElementById('stars');
+            var ctx = canvas.getContext('2d');
+            var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var stars = [];
+            for (var i = 0; i < 120; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1.5,
+                    twinkle: Math.random() * 0.5 + 0.2
+                });
+            }
+            function starInk() {
+                return document.documentElement.getAttribute('data-theme') === 'light' ? '47, 58, 79' : '255, 255, 255';
+            }
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                var ink = starInk();
+                stars.forEach(function(star) {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(' + ink + ',' + star.twinkle * 0.55 + ')';
+                    ctx.fill();
+                });
+                if (!reduced) rafId = requestAnimationFrame(draw);
+            }
+            var rafId = null;
+            function startStars() {
+                if (reduced) { draw(); rafId = null; return; }
+                if (rafId === null) rafId = requestAnimationFrame(draw);
+            }
+            function stopStars() {
+                if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+            }
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) stopStars();
+                else startStars();
+            });
+            startStars();
+            window.addEventListener('resize', function() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                if (reduced) draw(); // canvas reset clears it – redraw the static starfield
+            });
+            // Theme switch → repaint the starfield in the new mode's ink
+            // (cancel first so the animation chain never duplicates)
+            window.addEventListener('brain:thememode', function() { stopStars(); draw(); startStars(); });
+        } catch (e) { /* decorative only – never block the page */ }
+
+        // Theme toggle — explicit choice becomes sticky (the system default is
+        // followed until the user picks a mode themselves).
+        try {
+            var tt = document.getElementById('theme-toggle');
+            if (tt) tt.addEventListener('click', function() {
+                var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                window.__setThemeMode(next, true);
+            });
+        } catch (e) { /* decorative only */ }
+    </script>
+</body>
+</html>
