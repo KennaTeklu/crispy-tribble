@@ -67,9 +67,10 @@ function loadPosts() {
                 if (!p || !p[k]) fail('blog-posts/' + f + ': post missing field "' + k + '"');
             }
             if (!/^\d{4}-\d{2}-\d{2}$/.test(p.date)) fail('blog-posts/' + f + ': bad date "' + p.date + '" (expected YYYY-MM-DD)');
+            if (p.modified && !/^\d{4}-\d{2}-\d{2}$/.test(p.modified)) fail('blog-posts/' + f + ': bad modified "' + p.modified + '" (expected YYYY-MM-DD)');
             if (!/^[a-z0-9-]+$/.test(p.slug)) fail('blog-posts/' + f + ': bad slug "' + p.slug + '" (lowercase letters, digits, dashes)');
         }
-        posts.push(...newOnes.map(p => ({ file: f, title: p.title, date: p.date, slug: p.slug, tags: Array.isArray(p.tags) ? p.tags : [], excerpt: p.excerpt, body: p.body })));
+        posts.push(...newOnes.map(p => ({ file: f, title: p.title, date: p.date, slug: p.slug, tags: Array.isArray(p.tags) ? p.tags : [], excerpt: p.excerpt, body: p.body, modified: p.modified })));
     }
     const seen = new Set();
     for (const p of posts) {
@@ -193,8 +194,8 @@ const APP_JSONLD_NODE = {
     'description': 'Brain turns PDFs, DOCX, TXT and EPUB files into a 3D knowledge map. Study, quiz yourself, and track mastery with color-coded topics. Files are processed on your device and never uploaded.',
     'featureList': '3D knowledge map, color-coded mastery tracking, quiz and fill-in-the-blank generation, works offline, on-device file processing, PDF/DOCX/TXT/EPUB support',
     'offers': [
-        { '@type': 'Offer', 'name': 'Free plan', 'price': '0', 'priceCurrency': 'USD', 'description': 'Application-based free access. Apply via email at support@try4ever.com.' },
-        { '@type': 'Offer', 'name': 'Instant monthly plan', 'price': '19', 'priceCurrency': 'USD', 'description': 'Instant activation. 7-day free trial with no card required; trial does not auto-convert.' }
+        { '@type': 'Offer', 'name': 'Free plan', 'price': '0', 'priceCurrency': 'USD', 'description': 'Apply in minutes and study immediately: 21 nodes to start, more as your application is approved. No card required.' },
+        { '@type': 'Offer', 'name': 'Instant monthly plan', 'price': '19', 'priceCurrency': 'USD', 'description': 'Full product, instant activation. Cancel in one click anytime.' }
     ],
     'publisher': { '@id': SITE + '/#org' }
 };
@@ -208,15 +209,33 @@ const FAQ_JSONLD_NODE = {
         { '@type': 'Question', 'name': 'Is my data safe?',
           'acceptedAnswer': { '@type': 'Answer', 'text': 'Yes. Your files are processed on your device and everything you create is stored in your own browser (IndexedDB). There is no cloud copy, no account database and no tracking. Clearing your browser storage deletes your data – it belongs to you.' } },
         { '@type': 'Question', 'name': 'Is Brain free?',
-          'acceptedAnswer': { '@type': 'Answer', 'text': 'There is a $0/month plan. It requires a short application – email support@try4ever.com with what you\'re studying – and approval. The paid plan is $19/month and activates instantly. Every new account also gets a 7-day free trial of the full product: no card required and it does not auto-convert.' } },
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Yes – there is a $0/month plan. Email support@try4ever.com with what you\'re studying; the application is short. You study immediately: your map starts with 21 nodes and grows as your application is approved. No card, no countdown. When you want the full product, the paid plan is $19/month and activates instantly.' } },
         { '@type': 'Question', 'name': 'Can I get a refund?',
-          'acceptedAnswer': { '@type': 'Answer', 'text': 'Paid periods are all sales final – the 7-day no-card trial exists so you can try everything before paying. If you were charged twice or charged in error, contact support@try4ever.com and we will fix billing mistakes. You can cancel in one click at any time and keep access until the end of the period you already paid for.' } },
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Paid periods are all sales final – that is why the free plan lets you use the real product before paying anything. Billing mistakes are the exception: if you were charged twice or in error, contact support@try4ever.com and we will fix it. You can cancel in one click at any time and keep access until the end of the period you already paid for.' } },
         { '@type': 'Question', 'name': 'Who builds Brain?',
           'acceptedAnswer': { '@type': 'Answer', 'text': 'Brain is built and operated by try4ever, an independent solo software project based in Arizona, USA. Questions or issues: support@try4ever.com – we answer within 5 business days.' } },
         { '@type': 'Question', 'name': 'How are payments handled?',
           'acceptedAnswer': { '@type': 'Answer', 'text': 'Payments are processed by Stripe in USD. We never see or store your card details – Stripe handles the transaction on their certified infrastructure.' } },
         { '@type': 'Question', 'name': 'What file types does Brain work with?',
-          'acceptedAnswer': { '@type': 'Answer', 'text': 'PDF, DOCX, TXT and EPUB. Scanned PDFs are OCR-processed on your device (first 10 pages), and images, slides, spreadsheets and other documents are extracted locally as well.' } }
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'PDF, DOCX, TXT and EPUB. Scanned PDFs are OCR-processed on your device (first 10 pages), and images, slides, spreadsheets and other documents are extracted locally as well.' } },
+        { '@type': 'Question', 'name': 'I am drowning in lecture slides. How fast can this help?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Immediately. Upload the PDF and Brain builds the map on your device in minutes – you see the whole course at a glance and start quizzing the same hour. Most people find their first weak topic before their coffee gets cold.' } },
+        { '@type': 'Question', 'name': 'Studying for USMLE, MCAT or NCLEX – does it work for me?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Yes. Those exams reward exactly what Brain is built for: seeing connections, retrieving instead of rereading, and knowing what is still red before test day. Upload your class notes, review sheets or study guides and study the map.' } },
+        { '@type': 'Question', 'name': 'I am not a med student – law, business, engineering, languages?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Brain works on any material you can put in a PDF, DOCX, TXT or EPUB. Case law, tax code, thermodynamics, Japanese grammar – if you can study it, you can map it.' } },
+        { '@type': 'Question', 'name': 'I am a teacher. Is this another tool trying to replace me?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'No – and we mean it. AI should sharpen a teacher, never replace one. You prepare the material; Brain turns it into maps, quizzes and color-coded mastery your whole class can see. It takes the busywork, you keep the craft.' } },
+        { '@type': 'Question', 'name': 'I am a parent. Can I actually see my child\'s progress?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Yes. The mastery colors – red to green – are easy to read at a glance, so you can support without hovering. Brain gives you a shared, honest picture instead of “I already studied, mom.”' } },
+        { '@type': 'Question', 'name': 'Do I need a credit card?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'No. The free plan needs no card at all, and the application is a short email. Card details only enter the picture – through Stripe – if you choose the $19/month plan.' } },
+        { '@type': 'Question', 'name': 'What happens after I apply?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'You start studying immediately. There is no waiting room: your application is reviewed while you already use your map – 21 nodes to start, more unlocked as it is approved.' } },
+        { '@type': 'Question', 'name': 'Can I use it offline and on any device?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'It runs in your browser – laptop, desktop, tablet. Once loaded, it works offline: study on the bus, in the library basement, on a plane. Your data lives in your browser, not in a cloud.' } },
+        { '@type': 'Question', 'name': 'Why a 3D map instead of flashcards?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Flashcards drill isolated facts; a map shows how they connect – and exams mostly test connections. Brain does both: it generates the quizzes from your material, so you get retrieval practice inside the structure.' } }
     ]
 };
 
@@ -251,14 +270,14 @@ function pageJsonld(url, name, desc, opts) {
 }
 
 const PAGES = [
-    { route: 'home',     path: '/',        title: 'Brain – Turn PDFs & Notes Into a 3D Study Map', desc: 'Turn PDFs & notes into a 3D knowledge map you can study from. 7-day trial, no card. Free plan by application; $19/mo instant. Files never leave your device.', extraNodes: [APP_JSONLD_NODE], nav: null },
+    { route: 'home',     path: '/',        title: 'Brain – Turn PDFs & Notes Into a 3D Study Map', desc: 'Turn PDFs and notes into a 3D map you can actually study from. Apply once, start immediately – no card, no countdown. Free plan by application; $19/mo for it all.', extraNodes: [APP_JSONLD_NODE], nav: null },
     { route: 'how',      path: '/how/',    title: 'How Brain Works – From Upload to 3D Knowledge Map', desc: 'Upload a PDF, DOCX, TXT or EPUB, watch it become a 3D graph of topics, quiz yourself, and track mastery from red to green. On-device processing, step by step.', nav: 'how' },
     { route: 'features', path: '/features/', title: 'Features – 3D Map, Mastery Tracking, Quizzes, Offline', desc: 'A 3D knowledge map, color-coded mastery, quiz generation, offline mode and on-device file processing. Everything runs in your browser – no cloud, no tracking.', nav: 'features' },
     { route: 'about',    path: '/about/',  title: 'About Brain – Built by try4ever, Arizona USA', desc: 'Brain is a solo-built study tool by try4ever, an independent project in Arizona, USA. Private by design: files are processed on your device. Contact support@try4ever.com.', nav: 'about' },
-    { route: 'faq',      path: '/faq/',    title: 'FAQ – Brain Study Tool', desc: 'Answers about pricing (free plan by application, $19/mo, 7-day no-card trial), refunds, data privacy, file types, and who builds Brain.', extraNodes: [FAQ_JSONLD_NODE], nav: 'faq' },
+    { route: 'faq',      path: '/faq/',    title: 'FAQ – Brain Study Tool', desc: 'Quick answers on pricing (free plan by application – start immediately, no card), refunds, privacy – and who Brain is for: students, teachers, parents.', extraNodes: [FAQ_JSONLD_NODE], nav: 'faq' },
     { route: 'terms',    path: '/terms/',  title: 'Terms of Service – Brain', desc: 'The agreement between you and try4ever for using Brain: plans and billing, cancellation, refunds, acceptable use, governing law (Arizona, USA). Effective September 20, 2026.', nav: null },
     { route: 'privacy',  path: '/privacy/', title: 'Privacy Policy – Brain', desc: 'Your study material never leaves your device. No analytics, no trackers, no account database. What can leave your device, only by your action.', nav: null },
-    { route: 'refund',   path: '/refund/', title: 'Refund & Cancellation Policy – Brain', desc: 'Cancel in one click anytime and keep access until your paid period ends. 7-day free trial with no card. All sales final except our own billing errors.', nav: null },
+    { route: 'refund',   path: '/refund/', title: 'Refund & Cancellation Policy – Brain', desc: 'Cancel in one click anytime and keep access until your paid period ends. Try the real product on the free plan first – no card. Sales final except billing errors.', nav: null },
 ];
 
 // ---------------------------------------------------------------------------
@@ -323,13 +342,13 @@ function buildBlog(posts) {
         '            </li>').join('\n');
 
     const blogJsonld = pageJsonld(SITE + '/blog/', 'Blog – Brain Study Tool',
-        'Notes on studying, memory and building Brain – a 3D knowledge map tool for students.',
+        'Study science, exam playbooks and honest notes on how we learn – from the maker of Brain, the 3D knowledge map for students, teachers and parents.',
         { extra: [{
             '@type': 'Blog',
             '@id': SITE + '/blog/#blog',
             'name': 'Brain Blog',
             'url': SITE + '/blog/',
-            'description': 'Notes on studying, memory and building Brain – a 3D knowledge map tool for students.',
+            'description': 'Study science, exam playbooks and honest notes on how we learn – from the maker of Brain, the 3D knowledge map for students, teachers and parents.',
             'publisher': { '@id': SITE + '/#org' },
             'blogPost': posts.map(p => ({
                 '@type': 'BlogPosting',
@@ -341,9 +360,9 @@ function buildBlog(posts) {
         }] });
 
     write('blog/index.html', render({
-        content: '<div class="section">\n    <h1 class="page-title">Blog</h1>\n    <p>Notes on studying, memory and building Brain – a 3D knowledge map tool for students.</p>\n    <ul class="post-list">\n' + items + '\n    </ul>\n</div>',
+        content: '<div class="section">\n    <h1 class="page-title">Blog</h1>\n    <p>Study science, exam playbooks and honest notes on how we learn – written for students of every field, for teachers and for parents.</p>\n    <p>New here? Start with <a href="/how/">how it works</a>, or <a href="https://brain.try4ever.com" target="_blank" rel="noopener">apply free</a> and study your own material tonight.</p>\n    <ul class="post-list">\n' + items + '\n    </ul>\n</div>',
         title: 'Blog – Brain Study Tool',
-        desc: 'Notes on studying, memory and building Brain – a 3D knowledge map tool for students.',
+        desc: 'Study science, exam playbooks and honest notes on how we learn – from the maker of Brain, the 3D knowledge map for students, teachers and parents.',
         url: SITE + '/blog/',
         robots: 'index, follow, max-image-preview:large',
         ogType: 'website', jsonld: blogJsonld, nav: 'blog',
@@ -375,7 +394,7 @@ function buildBlog(posts) {
             '</div>';
 
         const postJsonld = pageJsonld(
-            SITE + '/blog/' + p.slug + '/', p.title + ' – Brain Blog', p.excerpt,
+            SITE + '/blog/' + p.slug + '/', p.title + ' – Brain', p.excerpt,
             {
                 mainEntity: { '@id': SITE + '/blog/' + p.slug + '/#blogpost' },
                 extra: [{
@@ -385,7 +404,7 @@ function buildBlog(posts) {
                     'description': p.excerpt,
                     'image': SITE + '/og-image.png',
                     'datePublished': p.date,
-                    'dateModified': p.date,
+                    'dateModified': p.modified || p.date,
                     'keywords': p.tags.join(', '),
                     'author': { '@id': SITE + '/#org' },
                     'publisher': { '@id': SITE + '/#org' },
@@ -396,7 +415,7 @@ function buildBlog(posts) {
 
         write('blog/' + p.slug + '/index.html', render({
             content,
-            title: p.title + ' – Brain Blog',
+            title: p.title + ' – Brain',
             desc: p.excerpt,
             url: SITE + '/blog/' + p.slug + '/',
             robots: 'index, follow, max-image-preview:large',
@@ -460,7 +479,7 @@ function buildMeta(posts) {
     const urls = [];
     for (const p of PAGES) urls.push({ loc: SITE + p.path, lastmod: TODAY });
     urls.push({ loc: SITE + '/blog/', lastmod: TODAY });
-    for (const p of posts) urls.push({ loc: SITE + '/blog/' + p.slug + '/', lastmod: p.date });
+    for (const p of posts) urls.push({ loc: SITE + '/blog/' + p.slug + '/', lastmod: p.modified || p.date });
 
     const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
@@ -494,7 +513,7 @@ function buildMeta(posts) {
     const lines = [
         '# Brain (try4ever.com)',
         '',
-        'Brain is a study tool by try4ever that turns PDFs, DOCX, TXT and EPUB files into an interactive 3D knowledge map in the browser. Files are processed entirely on the user\'s device — no upload, no account database, no tracking. Free plan by application ($0/mo), paid plan $19/mo, 7-day no-card trial. App lives at https://brain.try4ever.com.',
+        'Brain is a study tool by try4ever that turns PDFs, DOCX, TXT and EPUB files into an interactive 3D knowledge map in the browser. Files are processed entirely on the user\'s device — no upload, no account database, no tracking. Free plan by application (apply once, study immediately with 21 nodes, more after review — no card), paid plan $19/mo. App lives at https://brain.try4ever.com.',
         '',
         '## Pages',
         '',

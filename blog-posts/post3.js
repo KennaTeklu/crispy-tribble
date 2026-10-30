@@ -1,22 +1,20 @@
 window.blogPosts = window.blogPosts || [];
 window.blogPosts.push({
-    title: "Breaking News: Rote Memorization Officially Declared Inefficient – New Study Says Visual Mapping Wins",
+    title: "Rote Memorization Fails. Your Brain Wants This",
     date: "2026-08-24",
+    modified: "2026-10-30",
     slug: "rote-memorization-inefficient",
     tags: ["study", "research", "news", "visual-mapping"],
-    excerpt: "Scientists confirm that traditional note-taking methods are failing. Here's what actually works, and why you should care.",
-    body: "<h2>In a surprising twist, researchers find that lists don't work</h2>" +
-        "<p>In a recent longitudinal study tracking 1,200 university students across three years, researchers discovered that students who used visual mapping techniques (such as concept maps and spatial diagrams) scored 34% higher on retention exams than those who relied solely on bullet-point notes.</p>" +
-        "<p>Dr. Elena Fernandez, lead researcher, noted: 'The brain's spatial navigation system is far more evolved than its language processing system. By placing information in spatial arrangements, we're leveraging millions of years of evolutionary advantage.'</p>" +
-        "<h2>Q&A: The Top Questions on Visual Mapping</h2>" +
-        "<p><strong>Q: What is visual mapping exactly?</strong><br>" +
-        "A: It's any technique where you represent information as interconnected nodes or diagrams, rather than linear text. This can be done with pen and paper or digital tools.</p>" +
-        "<p><strong>Q: Is this just for science majors?</strong><br>" +
-        "A: No. It works for any subject – history, literature, law, nursing, even coding.</p>" +
-        "<p><strong>Q: Can I start using it today?</strong><br>" +
-        "A: Yes. Simple concept maps can be drawn by hand. But for large amounts of material, a digital tool that automatically builds the map from your notes can be a game-changer.</p>" +
-        "<h2>From the Newsroom: How to Adapt</h2>" +
-        "<p>While the study is clear, many students are still stuck in the old paradigm. The key takeaway is to organize knowledge spatially. Start by grouping related concepts, drawing links between them, and reviewing the big picture before the details.</p>" +
-        "<p>If you're looking for a tool that does this automatically, I've been using a free trial of something that turns my notes into a 3D star-map. It's called <a href='https://brain.try4ever.com'>Brain</a> – you can check it out at brain.try4ever.com. It's helped me see my entire syllabus at a glance, and I've stopped wasting time on unnecessary repetition.</p>" +
-        "<p>But even if you don't use a tool, the principle remains: stop memorizing lists, start mapping ideas. Your brain will thank you.</p>"
+    excerpt: "Repeating facts until they hurt is the hardest way to learn. What research says works instead – and how to switch tonight.",
+    body: "<h2>Have you memorized a list and lost it by Monday?</h2>" +
+        "<p>Then you already know the dirty secret of rote memorization: it feels like work because it <em>is</em> work – inefficient, exhausting work. Your brain is not a warehouse for arbitrary strings; it is a web of connections. Lists ignore the web. Maps use it.</p>" +
+        "<h2>What the research actually says</h2>" +
+        "<p>In the most influential review of its field, Dunlosky and colleagues (2013) rated ten popular learning techniques: <strong>practice testing</strong> and <strong>spaced review</strong> earned the highest utility rating across ages and subjects, while rereading and highlighting – the techniques students reach for most – scored at the bottom. Roughly <strong>84% of students reread</strong>, which means most people are working hard with the weakest tools.</p>" +
+        "<p>Visual mapping attacks the same problem from the other side: instead of forcing facts into a sequence, it lays out how they <em>connect</em> – and connections are what exams actually test.</p>" +
+        "<h2>Quick answers</h2>" +
+        "<p><strong>Is mapping only for science subjects?</strong><br>No. History timelines, legal element tests, language grammar, accounting flows – any subject with structure benefits.</p>" +
+        "<p><strong>Can I start today?</strong><br>Yes. Group related ideas, draw the links, review the whole picture before the details. For a full syllabus, automate it: <a href='https://brain.try4ever.com'>Brain</a> builds the 3D map from your own files in minutes, with quizzes attached.</p>" +
+        "<h2>The kind way to say it</h2>" +
+        "<p>If you've been grinding lists and blaming yourself, stop. The method was the problem – not you. Switch to structure plus retrieval, and studying gets quieter, faster, calmer.</p>" +
+        "<p><a href='https://brain.try4ever.com'>Map your material free</a> – apply once, study tonight.</p>"
 });

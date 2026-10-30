@@ -1,21 +1,21 @@
 window.blogPosts = window.blogPosts || [];
 window.blogPosts.push({
-    title: "7 Weird Study Hacks That Actually Work (Number 5 Will Surprise You)",
+    title: "5 Study Hacks That Actually Survived Testing",
     date: "2026-08-24",
+    modified: "2026-10-30",
     slug: "weird-study-hacks",
     tags: ["study", "hacks", "humor", "productivity"],
-    excerpt: "Forget flash cards and highlighters. These unconventional methods are backed by science – and one of them involves your GPS.",
-    body: "<h2>The List</h2>" +
-        "<p><strong>1. Chew Gum While Studying.</strong> Yes, really. Research suggests the act of chewing increases blood flow to the brain, improving focus and memory. Just don't chew the same flavor during the exam – that might be too distracting.</p>" +
-        "<p><strong>2. Teach It to a Rubber Duck.</strong> Explaining a concept out loud, even to an inanimate object, forces you to articulate it clearly. If you stumble, you know where the gaps are. It's like a mock presentation with zero pressure.</p>" +
-        "<p><strong>3. Walk While You Recall.</strong> Walking stimulates the hippocampus – the same area involved in spatial memory – which helps you remember facts. Pace around your room while reciting your notes. Your brain links the memories to your movement.</p>" +
-        "<p><strong>4. Change Your Environment.</strong> Studying in a different room (or even just a different chair) can improve retention because your brain associates the material with the surroundings. Novelty triggers deeper processing.</p>" +
-        "<p><strong>5. Build a Mental Map (or Use a Digital One).</strong> This is the big one. Our brains are spatial navigators. Instead of memorizing lists, assign each concept to a location in your mind or on a map. When you need to recall, you 'walk' through that space. I personally use <a href='https://brain.try4ever.com'>a tool</a> that creates a 3D graph of my entire syllabus – it's like a Google Maps for my knowledge. The nodes turn green when I'm solid, red when I'm shaky. It sounds weird, but it's changed how I study entirely.</p>" +
-        "<p><strong>6. The Feynman Technique.</strong> Pick a concept, explain it in simple words as if you're teaching a 10-year-old. If you can't do that, you don't understand it. Simple but brutal.</p>" +
-        "<p><strong>7. Sleep After Learning.</strong> This isn't a hack; it's biology. Sleep consolidates memories. Reviewing right before bed can boost recall. Make it a ritual.</p>" +
-        "<h2>Why #5 Is the Game-Changer</h2>" +
-        "<p>Most students treat notes as a text file – a flat sequence of words. But your brain isn't a text editor; it's a 3D explorer. When you see your topics arranged in a visual space, you instantly understand relationships, prioritize what's important, and spot your weak areas. It's like seeing the whole battlefield before you engage.</p>" +
-        "<p>I started with paper mind maps, but they became unwieldy for a 500-page syllabus. That's when I found a digital tool that does it automatically – <a href='https://brain.try4ever.com'>Brain</a> – and it's been a game-changer. It's free to try, and you'll wonder how you ever studied without it.</p>" +
-        "<h2>Final Thoughts</h2>" +
-        "<p>Not all hacks work for everyone, but the principle behind #5 – spatial organization – is backed by decades of cognitive science. Try it, and see if it doesn't make studying feel less like a chore and more like a treasure hunt.</p>"
+    excerpt: "Forget highlighters. Five unconventional study hacks that survived contact with real evidence – including one that involves walking in circles.",
+    body: "<h2>Most study hacks die on contact with an exam</h2>" +
+        "<p>These five didn't. Each one has receipts, and none of them require buying anything.</p>" +
+        "<h2>The five that stayed</h2>" +
+        "<p><strong>1. Teach it to a rubber duck.</strong> Explaining out loud forces articulation – and every stumble marks a gap. It's the Feynman technique with zero pressure and one very patient listener.</p>" +
+        "<p><strong>2. Walk while you recall.</strong> Movement engages the hippocampus – the same region that handles spatial navigation and memory. Pace, recite, repeat. Your brain files facts under <em>places</em>.</p>" +
+        "<p><strong>3. Sleep on it – literally.</strong> Sleep consolidates memory; a review session right before bed is biology working for free. Not a hack, a cheat code.</p>" +
+        "<p><strong>4. Change rooms to change context.</strong> Novel environment triggers deeper processing. Same material, new chair – measurably stickier.</p>" +
+        "<p><strong>5. Quiz yourself instead of rereading.</strong> The least glamorous and the most powerful: in the classic experiment by Roediger and Karpicke (2006), self-testers recalled <strong>61%</strong> after a week; rereaders <strong>40%</strong>. The research review by Dunlosky et al. (2013) puts practice testing at the very top of all study techniques.</p>" +
+        "<h2>Quick answers</h2>" +
+        "<p><strong>Where does the 3D map fit?</strong><br>Hack #5 needs questions, and writing good ones takes forever. I let <a href='https://brain.try4ever.com'>Brain</a> generate them from my own files – and the map shows me which topics are still red so the quizzing goes where it hurts. Spatial learning is hack #2, industrialized.</p>" +
+        "<p><strong>Do these work together?</strong><br>Stack them: walk while self-quizzing, review before bed. Two hours of this beats six hours of rereading.</p>" +
+        "<p><a href='https://brain.try4ever.com'>Put the best hack on autopilot</a> – apply free, study tonight.</p>"
 });

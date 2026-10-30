@@ -1,20 +1,23 @@
 window.blogPosts = window.blogPosts || [];
 window.blogPosts.push({
-    title: "How I Went from Drowning in Notes to Actually Enjoying the Process",
+    title: "Drowning in Lecture Notes? Here's the Fix",
     date: "2026-08-24",
+    modified: "2026-10-30",
     slug: "drowning-in-notes",
     tags: ["personal", "study", "productivity"],
-    excerpt: "I used to hate studying. Then I discovered a way to see my whole syllabus at once – and everything changed.",
-    body: "<h2>The Overwhelming Stack</h2>" +
-        "<p>Last semester, I was staring at over 500 pages of medical notes. I had them organized in color-coded folders, but every time I opened one, my brain shut down. It felt like I was trying to drink from a fire hose.</p>" +
-        "<p>I knew the material was important, but I couldn't see how it all connected. Each topic seemed like an island, and I was hopping between them without a map.</p>" +
-        "<h2>The Turning Point</h2>" +
-        "<p>One day, I tried a different approach: instead of listing topics, I drew them as a web. I put \"Cardiology\" at the center and connected it to \"Anatomy\", \"Pharmacology\", \"Pathology\". Suddenly, I could see relationships I'd never noticed before. It felt like I was looking at a photograph of my knowledge.</p>" +
-        "<p>That experience got me wondering: could I turn my entire syllabus into one such map? A digital one that I could navigate with the click of a button?</p>" +
-        "<h2>Putting It into Practice</h2>" +
-        "<p>I found <a href='https://brain.try4ever.com'>a tool that builds a 3D visualization from my notes</a> – each topic becomes a glowing node, and the connections are drawn for me. I could zoom out and see the whole landscape, or zoom in on a single topic. The red nodes showed me exactly where I was weak, and green ones showed my strengths. For the first time, I felt in control.</p>" +
-        "<p>Within two weeks, my exam scores improved by 18%. More importantly, studying didn't feel like a chore anymore – it felt like exploring a new world.</p>" +
-        "<h2>What I Learned</h2>" +
-        "<p>You don't need to memorize everything. You need to see the structure. Once you understand how pieces fit together, the details fall into place.</p>" +
-        "<p>If you're feeling overwhelmed, try this: take your syllabus and build a simple mind map. Or use a tool that does it for you – like <a href='https://brain.try4ever.com'>Brain</a> – and see if it changes your perspective. It's free to try, and it might just change the way you study forever.</p>"
+    excerpt: "I used to hate studying. Then I learned to see my whole syllabus at once – and the stack of PDFs turned into a map I could walk.",
+    body: "<h2>The stack that ate the semester</h2>" +
+        "<p>Every course gives you the same gift: a folder of PDFs you'll never finish. Lecture slides, textbook chapters, review sheets – hundreds of pages that all scream <em>urgent</em>. I used to open one, read until my eyes glazed, and close it feeling worse than before.</p>" +
+        "<h2>What changed</h2>" +
+        "<p>One sentence, said by a tutor who had seen a thousand students: <em>“You don't have a reading problem. You have a visibility problem.”</em></p>" +
+        "<p>I stopped trying to read everything and started trying to <strong>see</strong> everything: what exists, what depends on what, what I actually know. That's when notes stopped being a wall and became a map – and studying turned from drowning into navigation.</p>" +
+        "<h2>What a map gives you that a stack can't</h2>" +
+        "<p><strong>a) The whole course in one glance</strong> – no more guessing what's left.<br>" +
+        "<strong>b) Priorities for free</strong> – hub topics with many connections matter more than leaf details.<br>" +
+        "<strong>c) Honest weak spots</strong> – in my map, weak areas glow red; they can't hide behind highlighted pages.<br>" +
+        "<strong>d) Quizzes where they matter</strong> – generated from my own material, aimed at the red parts.</p>" +
+        "<h2>Quick answers</h2>" +
+        "<p><strong>Isn't building a map extra work?</strong><br>By hand, yes – that's why nobody does it. I built <a href='https://brain.try4ever.com'>Brain</a> so the map builds itself from the PDFs and notes you already have, on your own device, in minutes.</p>" +
+        "<p><strong>Does it work for big courses?</strong><br>That's exactly where it shines. A 500-slide deck becomes navigable space instead of an all-nighter.</p>" +
+        "<p>If you're drowning, stop swimming harder. Get above the water. <a href='https://brain.try4ever.com'>See your course as a map</a> – apply once, study tonight.</p>"
 });
