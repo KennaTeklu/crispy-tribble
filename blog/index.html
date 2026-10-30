@@ -47,27 +47,182 @@
     <meta name="color-scheme" content="dark light">
     <link rel="canonical" href="https://try4ever.com/blog/">
 <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://try4ever.com/#org",
+      "name": "try4ever",
+      "alternateName": "try4ever.com",
+      "url": "https://try4ever.com/",
+      "description": "Independent solo software project based in Arizona, USA, building the Brain study tool.",
+      "email": "support@try4ever.com",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://try4ever.com/#logo",
+        "url": "https://try4ever.com/og-image.png",
+        "contentUrl": "https://try4ever.com/og-image.png",
+        "width": 1200,
+        "height": 630,
+        "caption": "Brain by try4ever – turn PDFs and notes into a 3D knowledge map"
+      },
+      "image": {
+        "@id": "https://try4ever.com/#logo"
+      },
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61595619313031",
+        "https://www.youtube.com/@try4ever_com",
+        "https://www.instagram.com/try4ever_com/",
+        "https://x.com/try4everCom",
+        "https://www.reddit.com/user/try4ever_com",
+        "https://www.linkedin.com/company/143919630/",
+        "https://t.me/try4ever_com",
+        "https://www.threads.com/@try4ever_com",
+        "https://www.pinterest.com/try4evercom/",
+        "https://vk.ru/id1101212552",
+        "https://vkvideo.ru/@club242546823",
+        "https://ok.ru/profile/910712328823",
+        "https://www.twitch.tv/try4ever_com",
+        "https://www.dailymotion.com/user/try4ever",
+        "https://www.tumblr.com/try4ever-com",
+        "https://rumble.com/user/try4ever_com",
+        "https://bsky.app/profile/try4ever.bsky.social",
+        "https://vimeo.com/try4ever",
+        "https://kick.com/tryever",
+        "https://odysee.com/@try4ever"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Arizona",
+        "addressCountry": "US"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "support@try4ever.com",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://try4ever.com/#website",
+      "url": "https://try4ever.com/",
+      "name": "Brain",
+      "alternateName": "Brain study tool",
+      "publisher": {
+        "@id": "https://try4ever.com/#org"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://try4ever.com/blog/#webpage",
+      "url": "https://try4ever.com/blog/",
+      "name": "Blog – Brain Study Tool",
+      "description": "Notes on studying, memory and building Brain – a 3D knowledge map tool for students.",
+      "isPartOf": {
+        "@id": "https://try4ever.com/#website"
+      },
+      "about": {
+        "@id": "https://try4ever.com/#org"
+      },
+      "inLanguage": "en-US",
+      "primaryImageOfPage": {
+        "@id": "https://try4ever.com/#logo"
+      }
+    },
+    {
       "@type": "Blog",
+      "@id": "https://try4ever.com/blog/#blog",
       "name": "Brain Blog",
       "url": "https://try4ever.com/blog/",
       "description": "Notes on studying, memory and building Brain – a 3D knowledge map tool for students.",
-      "publisher": { "@id": "https://try4ever.com/#org" },
+      "publisher": {
+        "@id": "https://try4ever.com/#org"
+      },
       "blogPost": [
-        { "@type": "BlogPosting", "headline": "Spaced repetition vs. 3D maps — which one wins for visual learners?", "url": "https://try4ever.com/blog/spaced-repetition-vs-3d-maps/", "datePublished": "2026-09-21" },
-        { "@type": "BlogPosting", "headline": "Red to green: how color-coded mastery actually changes how you study", "url": "https://try4ever.com/blog/red-to-green-mastery/", "datePublished": "2026-09-21" },
-        { "@type": "BlogPosting", "headline": "Why I built Brain — a 3D map for self-study", "url": "https://try4ever.com/blog/why-i-built-brain/", "datePublished": "2026-09-20" },
-        { "@type": "BlogPosting", "headline": "The Coffee Shop Conversation That Changed How I Study", "url": "https://try4ever.com/blog/coffee-shop-conversation/", "datePublished": "2026-08-24" },
-        { "@type": "BlogPosting", "headline": "7 Weird Study Hacks That Actually Work (Number 5 Will Surprise You)", "url": "https://try4ever.com/blog/weird-study-hacks/", "datePublished": "2026-08-24" },
-        { "@type": "BlogPosting", "headline": "Exclusive Interview: A Learning Coach Reveals the Secret to Mastering Any Exam", "url": "https://try4ever.com/blog/learning-coach-interview/", "datePublished": "2026-08-24" },
-        { "@type": "BlogPosting", "headline": "Why 'Read It 5 Times' Is the Worst Advice You'll Ever Get", "url": "https://try4ever.com/blog/read-five-times-worst/", "datePublished": "2026-08-24" },
-        { "@type": "BlogPosting", "headline": "How I Went from Drowning in Notes to Actually Enjoying the Process", "url": "https://try4ever.com/blog/drowning-in-notes/", "datePublished": "2026-08-24" },
-        { "@type": "BlogPosting", "headline": "Breaking News: Rote Memorization Officially Declared Inefficient – New Study Says Visual Mapping Wins", "url": "https://try4ever.com/blog/rote-memorization-inefficient/", "datePublished": "2026-08-24" },
-        { "@type": "BlogPosting", "headline": "Poetic Musings on the Brain: Why You're Already a Stargazer", "url": "https://try4ever.com/blog/poetic-brain-stargazer/", "datePublished": "2026-08-24" },
-        { "@type": "BlogPosting", "headline": "The Untapped Power of Spatial Memory: How Your Brain Navigates Knowledge", "url": "https://try4ever.com/blog/spatial-memory-power/", "datePublished": "2026-08-24" }
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/spaced-repetition-vs-3d-maps/#blogpost",
+          "headline": "Spaced repetition vs. 3D maps — which one wins for visual learners?",
+          "url": "https://try4ever.com/blog/spaced-repetition-vs-3d-maps/",
+          "datePublished": "2026-09-21"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/red-to-green-mastery/#blogpost",
+          "headline": "Red to green: how color-coded mastery actually changes how you study",
+          "url": "https://try4ever.com/blog/red-to-green-mastery/",
+          "datePublished": "2026-09-21"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/why-i-built-brain/#blogpost",
+          "headline": "Why I built Brain — a 3D map for self-study",
+          "url": "https://try4ever.com/blog/why-i-built-brain/",
+          "datePublished": "2026-09-20"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/coffee-shop-conversation/#blogpost",
+          "headline": "The Coffee Shop Conversation That Changed How I Study",
+          "url": "https://try4ever.com/blog/coffee-shop-conversation/",
+          "datePublished": "2026-08-24"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/weird-study-hacks/#blogpost",
+          "headline": "7 Weird Study Hacks That Actually Work (Number 5 Will Surprise You)",
+          "url": "https://try4ever.com/blog/weird-study-hacks/",
+          "datePublished": "2026-08-24"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/learning-coach-interview/#blogpost",
+          "headline": "Exclusive Interview: A Learning Coach Reveals the Secret to Mastering Any Exam",
+          "url": "https://try4ever.com/blog/learning-coach-interview/",
+          "datePublished": "2026-08-24"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/read-five-times-worst/#blogpost",
+          "headline": "Why 'Read It 5 Times' Is the Worst Advice You'll Ever Get",
+          "url": "https://try4ever.com/blog/read-five-times-worst/",
+          "datePublished": "2026-08-24"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/drowning-in-notes/#blogpost",
+          "headline": "How I Went from Drowning in Notes to Actually Enjoying the Process",
+          "url": "https://try4ever.com/blog/drowning-in-notes/",
+          "datePublished": "2026-08-24"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/rote-memorization-inefficient/#blogpost",
+          "headline": "Breaking News: Rote Memorization Officially Declared Inefficient – New Study Says Visual Mapping Wins",
+          "url": "https://try4ever.com/blog/rote-memorization-inefficient/",
+          "datePublished": "2026-08-24"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/poetic-brain-stargazer/#blogpost",
+          "headline": "Poetic Musings on the Brain: Why You're Already a Stargazer",
+          "url": "https://try4ever.com/blog/poetic-brain-stargazer/",
+          "datePublished": "2026-08-24"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://try4ever.com/blog/spatial-memory-power/#blogpost",
+          "headline": "The Untapped Power of Spatial Memory: How Your Brain Navigates Knowledge",
+          "url": "https://try4ever.com/blog/spatial-memory-power/",
+          "datePublished": "2026-08-24"
+        }
       ]
     }
+  ]
+}
     </script>
 
     <link rel="alternate" type="application/rss+xml" title="Brain Blog – try4ever.com" href="/feed.xml">
@@ -83,7 +238,53 @@
     <meta property="og:image:alt" content="Brain – a 3D knowledge map of connected study topics on a dark starfield">
     <meta property="og:locale" content="en_US">
 
+
+    <!-- ===== SOCIAL IDENTITY — source of truth, ranked by platform reach =====
+         Machine-readable on EVERY page: rel="me" identity links +
+         og:see_also below + the JSON-LD sameAs array. Each profile links
+         back to try4ever.com for verification. -->
+    <link rel="me" href="https://www.facebook.com/profile.php?id=61595619313031">
+    <link rel="me" href="https://www.youtube.com/@try4ever_com">
+    <link rel="me" href="https://www.instagram.com/try4ever_com/">
+    <link rel="me" href="https://x.com/try4everCom">
+    <link rel="me" href="https://www.reddit.com/user/try4ever_com">
+    <link rel="me" href="https://www.linkedin.com/company/143919630/">
+    <link rel="me" href="https://t.me/try4ever_com">
+    <link rel="me" href="https://www.threads.com/@try4ever_com">
+    <link rel="me" href="https://www.pinterest.com/try4evercom/">
+    <link rel="me" href="https://vk.ru/id1101212552">
+    <link rel="me" href="https://vkvideo.ru/@club242546823">
+    <link rel="me" href="https://ok.ru/profile/910712328823">
+    <link rel="me" href="https://www.twitch.tv/try4ever_com">
+    <link rel="me" href="https://www.dailymotion.com/user/try4ever">
+    <link rel="me" href="https://www.tumblr.com/try4ever-com">
+    <link rel="me" href="https://rumble.com/user/try4ever_com">
+    <link rel="me" href="https://bsky.app/profile/try4ever.bsky.social">
+    <link rel="me" href="https://vimeo.com/try4ever">
+    <link rel="me" href="https://kick.com/tryever">
+    <link rel="me" href="https://odysee.com/@try4ever">
+    <meta property="og:see_also" content="https://www.facebook.com/profile.php?id=61595619313031">
+    <meta property="og:see_also" content="https://www.youtube.com/@try4ever_com">
+    <meta property="og:see_also" content="https://www.instagram.com/try4ever_com/">
+    <meta property="og:see_also" content="https://x.com/try4everCom">
+    <meta property="og:see_also" content="https://www.reddit.com/user/try4ever_com">
+    <meta property="og:see_also" content="https://www.linkedin.com/company/143919630/">
+    <meta property="og:see_also" content="https://t.me/try4ever_com">
+    <meta property="og:see_also" content="https://www.threads.com/@try4ever_com">
+    <meta property="og:see_also" content="https://www.pinterest.com/try4evercom/">
+    <meta property="og:see_also" content="https://vk.ru/id1101212552">
+    <meta property="og:see_also" content="https://vkvideo.ru/@club242546823">
+    <meta property="og:see_also" content="https://ok.ru/profile/910712328823">
+    <meta property="og:see_also" content="https://www.twitch.tv/try4ever_com">
+    <meta property="og:see_also" content="https://www.dailymotion.com/user/try4ever">
+    <meta property="og:see_also" content="https://www.tumblr.com/try4ever-com">
+    <meta property="og:see_also" content="https://rumble.com/user/try4ever_com">
+    <meta property="og:see_also" content="https://bsky.app/profile/try4ever.bsky.social">
+    <meta property="og:see_also" content="https://vimeo.com/try4ever">
+    <meta property="og:see_also" content="https://kick.com/tryever">
+    <meta property="og:see_also" content="https://odysee.com/@try4ever">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@try4everCom">
     <meta name="twitter:title" content="Blog – Brain Study Tool">
     <meta name="twitter:description" content="Notes on studying, memory and building Brain – a 3D knowledge map tool for students.">
     <meta name="twitter:image" content="https://try4ever.com/og-image.png">

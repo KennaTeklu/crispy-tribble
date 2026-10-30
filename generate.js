@@ -127,83 +127,138 @@ const SOCIAL_LINKS_HTML = '<div class="social-links" aria-label="Official try4ev
         '<a class="soc" href="' + p.u + '" target="_blank" rel="noopener" aria-label="try4ever on ' + esc(p.n) + '" title="try4ever on ' + esc(p.n) + '">' + socialIconSvg(p.n) + '</a>'
     ).join('') +
     '</div>';
+// Head block injected into EVERY page (all 20 URLs AND 404.html): the same
+// ranked profile set, machine-readable in three independent formats —
+//   1. <link rel="me">   decentralized identity standard (IndieAuth / Mastodon
+//      / Bluesky back-link verification: proves "this site owns that profile")
+//   2. <meta property="og:see_also">  OpenGraph cross-references read by
+//      Facebook / LinkedIn / WhatsApp / Discord-style scrapers
+//   3. the Organization JSON-LD sameAs array (Google / Bing / Yandex)
+// The order is identical everywhere: largest platform daily reach first, so
+// every crawler sees ONE consistent, ranked source of truth.
+const SOCIAL_HEAD_HTML =
+    '\n    <!-- ===== SOCIAL IDENTITY — source of truth, ranked by platform reach =====\n' +
+    '         Machine-readable on EVERY page: rel="me" identity links +\n' +
+    '         og:see_also below + the JSON-LD sameAs array. Each profile links\n' +
+    '         back to try4ever.com for verification. -->\n' +
+    SOCIAL_PROFILES.map(p => '    <link rel="me" href="' + p.u + '">').join('\n') + '\n' +
+    SOCIAL_PROFILES.map(p => '    <meta property="og:see_also" content="' + p.u + '">').join('\n');
 
-const FAQ_JSONLD = `<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        { "@type": "Question", "name": "Is Brain made for a specific exam?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. Brain works for anything you study: USMLE, MCAT, history, programming, law, languages – any material you can put in a PDF, DOCX, TXT or EPUB file." } },
-        { "@type": "Question", "name": "Is my data safe?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your files are processed on your device and everything you create is stored in your own browser (IndexedDB). There is no cloud copy, no account database and no tracking. Clearing your browser storage deletes your data – it belongs to you." } },
-        { "@type": "Question", "name": "Is Brain free?",
-          "acceptedAnswer": { "@type": "Answer", "text": "There is a $0/month plan. It requires a short application – email support@try4ever.com with what you're studying – and approval. The paid plan is $19/month and activates instantly. Every new account also gets a 7-day free trial of the full product: no card required and it does not auto-convert." } },
-        { "@type": "Question", "name": "Can I get a refund?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Paid periods are all sales final – the 7-day no-card trial exists so you can try everything before paying. If you were charged twice or charged in error, contact support@try4ever.com and we will fix billing mistakes. You can cancel in one click at any time and keep access until the end of the period you already paid for." } },
-        { "@type": "Question", "name": "Who builds Brain?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Brain is built and operated by try4ever, an independent solo software project based in Arizona, USA. Questions or issues: support@try4ever.com – we answer within 5 business days." } },
-        { "@type": "Question", "name": "How are payments handled?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Payments are processed by Stripe in USD. We never see or store your card details – Stripe handles the transaction on their certified infrastructure." } },
-        { "@type": "Question", "name": "What file types does Brain work with?",
-          "acceptedAnswer": { "@type": "Answer", "text": "PDF, DOCX, TXT and EPUB. Scanned PDFs are OCR-processed on your device (first 10 pages), and images, slides, spreadsheets and other documents are extracted locally as well." } }
-      ]
-    }
-    </script>`;
+// ---------------------------------------------------------------------------
+// JSON-LD entity graph — EVERY page (including 404.html) ships a complete,
+// self-contained knowledge graph: Organization (sameAs ranked by platform
+// reach) + WebSite + the page's own WebPage node, all cross-linked with @id
+// so search engines merge ONE brand entity instead of disconnected fragments.
+// ---------------------------------------------------------------------------
+const ORG_JSONLD_NODE = {
+    '@type': 'Organization',
+    '@id': SITE + '/#org',
+    'name': 'try4ever',
+    'alternateName': 'try4ever.com',
+    'url': SITE + '/',
+    'description': 'Independent solo software project based in Arizona, USA, building the Brain study tool.',
+    'email': 'support@try4ever.com',
+    'logo': {
+        '@type': 'ImageObject',
+        '@id': SITE + '/#logo',
+        'url': SITE + '/og-image.png',
+        'contentUrl': SITE + '/og-image.png',
+        'width': 1200,
+        'height': 630,
+        'caption': 'Brain by try4ever – turn PDFs and notes into a 3D knowledge map'
+    },
+    'image': { '@id': SITE + '/#logo' },
+    'sameAs': SOCIAL_SAMEAS,
+    'address': { '@type': 'PostalAddress', 'addressRegion': 'Arizona', 'addressCountry': 'US' },
+    'contactPoint': { '@type': 'ContactPoint', 'contactType': 'customer support', 'email': 'support@try4ever.com', 'availableLanguage': 'English' }
+};
 
-const HOME_JSONLD = `<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Brain",
-      "alternateName": "Brain study tool",
-      "url": "https://try4ever.com/",
-      "publisher": { "@id": "https://try4ever.com/#org" }
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": "https://try4ever.com/#org",
-      "name": "try4ever",
-      "description": "Independent solo software project based in Arizona, USA, building the Brain study tool.",
-      "url": "https://try4ever.com/",
-      "email": "support@try4ever.com",
-      "logo": "https://try4ever.com/og-image.png",
-      "sameAs": [
-${SOCIAL_SAMEAS.map(u => '        "' + u + '"').join(',\n')}
-      ],
-      "address": { "@type": "PostalAddress", "addressRegion": "Arizona", "addressCountry": "US" }
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Brain",
-      "applicationCategory": "EducationalApplication",
-      "operatingSystem": "Web browser",
-      "url": "https://try4ever.com/",
-      "description": "Brain turns PDFs, DOCX, TXT and EPUB files into a 3D knowledge map. Study, quiz yourself, and track mastery with color-coded topics. Files are processed on your device and never uploaded.",
-      "featureList": "3D knowledge map, color-coded mastery tracking, quiz and fill-in-the-blank generation, works offline, on-device file processing, PDF/DOCX/TXT/EPUB support",
-      "offers": [
-        { "@type": "Offer", "name": "Free plan", "price": "0", "priceCurrency": "USD", "description": "Application-based free access. Apply via email at support@try4ever.com." },
-        { "@type": "Offer", "name": "Instant monthly plan", "price": "19", "priceCurrency": "USD", "description": "Instant activation. 7-day free trial with no card required; trial does not auto-convert." }
-      ],
-      "publisher": { "@id": "https://try4ever.com/#org" }
-    }
-    </script>`;
+const WEBSITE_JSONLD_NODE = {
+    '@type': 'WebSite',
+    '@id': SITE + '/#website',
+    'url': SITE + '/',
+    'name': 'Brain',
+    'alternateName': 'Brain study tool',
+    'publisher': { '@id': SITE + '/#org' },
+    'inLanguage': 'en-US'
+};
+
+const APP_JSONLD_NODE = {
+    '@type': 'SoftwareApplication',
+    '@id': SITE + '/#app',
+    'name': 'Brain',
+    'applicationCategory': 'EducationalApplication',
+    'operatingSystem': 'Web browser',
+    'url': SITE + '/',
+    'description': 'Brain turns PDFs, DOCX, TXT and EPUB files into a 3D knowledge map. Study, quiz yourself, and track mastery with color-coded topics. Files are processed on your device and never uploaded.',
+    'featureList': '3D knowledge map, color-coded mastery tracking, quiz and fill-in-the-blank generation, works offline, on-device file processing, PDF/DOCX/TXT/EPUB support',
+    'offers': [
+        { '@type': 'Offer', 'name': 'Free plan', 'price': '0', 'priceCurrency': 'USD', 'description': 'Application-based free access. Apply via email at support@try4ever.com.' },
+        { '@type': 'Offer', 'name': 'Instant monthly plan', 'price': '19', 'priceCurrency': 'USD', 'description': 'Instant activation. 7-day free trial with no card required; trial does not auto-convert.' }
+    ],
+    'publisher': { '@id': SITE + '/#org' }
+};
+
+const FAQ_JSONLD_NODE = {
+    '@type': 'FAQPage',
+    '@id': SITE + '/faq/#faq',
+    'mainEntity': [
+        { '@type': 'Question', 'name': 'Is Brain made for a specific exam?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'No. Brain works for anything you study: USMLE, MCAT, history, programming, law, languages – any material you can put in a PDF, DOCX, TXT or EPUB file.' } },
+        { '@type': 'Question', 'name': 'Is my data safe?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Yes. Your files are processed on your device and everything you create is stored in your own browser (IndexedDB). There is no cloud copy, no account database and no tracking. Clearing your browser storage deletes your data – it belongs to you.' } },
+        { '@type': 'Question', 'name': 'Is Brain free?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'There is a $0/month plan. It requires a short application – email support@try4ever.com with what you\'re studying – and approval. The paid plan is $19/month and activates instantly. Every new account also gets a 7-day free trial of the full product: no card required and it does not auto-convert.' } },
+        { '@type': 'Question', 'name': 'Can I get a refund?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Paid periods are all sales final – the 7-day no-card trial exists so you can try everything before paying. If you were charged twice or charged in error, contact support@try4ever.com and we will fix billing mistakes. You can cancel in one click at any time and keep access until the end of the period you already paid for.' } },
+        { '@type': 'Question', 'name': 'Who builds Brain?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Brain is built and operated by try4ever, an independent solo software project based in Arizona, USA. Questions or issues: support@try4ever.com – we answer within 5 business days.' } },
+        { '@type': 'Question', 'name': 'How are payments handled?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'Payments are processed by Stripe in USD. We never see or store your card details – Stripe handles the transaction on their certified infrastructure.' } },
+        { '@type': 'Question', 'name': 'What file types does Brain work with?',
+          'acceptedAnswer': { '@type': 'Answer', 'text': 'PDF, DOCX, TXT and EPUB. Scanned PDFs are OCR-processed on your device (first 10 pages), and images, slides, spreadsheets and other documents are extracted locally as well.' } }
+    ]
+};
+
+// Serializes a node into one JSON-LD <script>. "<" is escaped as \u003c so
+// embedded text can never terminate the script element early.
+function jsonldScript(node) {
+    return '<script type="application/ld+json">\n' +
+        JSON.stringify(node, null, 2).replace(/</g, '\\u003c') +
+        '\n    </script>';
+}
+
+// Full per-page graph: Organization + WebSite + WebPage (+ optional extras).
+// `mainEntity` ties the page to its primary content node (e.g. its BlogPosting).
+function pageJsonld(url, name, desc, opts) {
+    opts = opts || {};
+    const webPage = {
+        '@type': 'WebPage',
+        '@id': url + '#webpage',
+        'url': url,
+        'name': name,
+        'description': desc,
+        'isPartOf': { '@id': SITE + '/#website' },
+        'about': { '@id': SITE + '/#org' },
+        'inLanguage': 'en-US',
+        'primaryImageOfPage': { '@id': SITE + '/#logo' }
+    };
+    if (opts.mainEntity) webPage['mainEntity'] = opts.mainEntity;
+    return jsonldScript({
+        '@context': 'https://schema.org',
+        '@graph': [ORG_JSONLD_NODE, WEBSITE_JSONLD_NODE, webPage].concat(opts.extra || [])
+    });
+}
 
 const PAGES = [
-    { route: 'home',     path: '/',        title: 'Brain – Turn PDFs & Notes Into a 3D Study Map', desc: 'Turn PDFs & notes into a 3D knowledge map you can study from. 7-day trial, no card. Free plan by application; $19/mo instant. Files never leave your device.', jsonld: HOME_JSONLD, nav: null },
-    { route: 'how',      path: '/how/',    title: 'How Brain Works – From Upload to 3D Knowledge Map', desc: 'Upload a PDF, DOCX, TXT or EPUB, watch it become a 3D graph of topics, quiz yourself, and track mastery from red to green. On-device processing, step by step.', jsonld: '', nav: 'how' },
-    { route: 'features', path: '/features/', title: 'Features – 3D Map, Mastery Tracking, Quizzes, Offline', desc: 'A 3D knowledge map, color-coded mastery, quiz generation, offline mode and on-device file processing. Everything runs in your browser – no cloud, no tracking.', jsonld: '', nav: 'features' },
-    { route: 'about',    path: '/about/',  title: 'About Brain – Built by try4ever, Arizona USA', desc: 'Brain is a solo-built study tool by try4ever, an independent project in Arizona, USA. Private by design: files are processed on your device. Contact support@try4ever.com.', jsonld: '', nav: 'about' },
-    { route: 'faq',      path: '/faq/',    title: 'FAQ – Brain Study Tool', desc: 'Answers about pricing (free plan by application, $19/mo, 7-day no-card trial), refunds, data privacy, file types, and who builds Brain.', jsonld: FAQ_JSONLD, nav: 'faq' },
-    { route: 'terms',    path: '/terms/',  title: 'Terms of Service – Brain', desc: 'The agreement between you and try4ever for using Brain: plans and billing, cancellation, refunds, acceptable use, governing law (Arizona, USA). Effective September 20, 2026.', jsonld: '', nav: null },
-    { route: 'privacy',  path: '/privacy/', title: 'Privacy Policy – Brain', desc: 'Your study material never leaves your device. No analytics, no trackers, no account database. What can leave your device, only by your action.', jsonld: '', nav: null },
-    { route: 'refund',   path: '/refund/', title: 'Refund & Cancellation Policy – Brain', desc: 'Cancel in one click anytime and keep access until your paid period ends. 7-day free trial with no card. All sales final except our own billing errors.', jsonld: '', nav: null },
+    { route: 'home',     path: '/',        title: 'Brain – Turn PDFs & Notes Into a 3D Study Map', desc: 'Turn PDFs & notes into a 3D knowledge map you can study from. 7-day trial, no card. Free plan by application; $19/mo instant. Files never leave your device.', extraNodes: [APP_JSONLD_NODE], nav: null },
+    { route: 'how',      path: '/how/',    title: 'How Brain Works – From Upload to 3D Knowledge Map', desc: 'Upload a PDF, DOCX, TXT or EPUB, watch it become a 3D graph of topics, quiz yourself, and track mastery from red to green. On-device processing, step by step.', nav: 'how' },
+    { route: 'features', path: '/features/', title: 'Features – 3D Map, Mastery Tracking, Quizzes, Offline', desc: 'A 3D knowledge map, color-coded mastery, quiz generation, offline mode and on-device file processing. Everything runs in your browser – no cloud, no tracking.', nav: 'features' },
+    { route: 'about',    path: '/about/',  title: 'About Brain – Built by try4ever, Arizona USA', desc: 'Brain is a solo-built study tool by try4ever, an independent project in Arizona, USA. Private by design: files are processed on your device. Contact support@try4ever.com.', nav: 'about' },
+    { route: 'faq',      path: '/faq/',    title: 'FAQ – Brain Study Tool', desc: 'Answers about pricing (free plan by application, $19/mo, 7-day no-card trial), refunds, data privacy, file types, and who builds Brain.', extraNodes: [FAQ_JSONLD_NODE], nav: 'faq' },
+    { route: 'terms',    path: '/terms/',  title: 'Terms of Service – Brain', desc: 'The agreement between you and try4ever for using Brain: plans and billing, cancellation, refunds, acceptable use, governing law (Arizona, USA). Effective September 20, 2026.', nav: null },
+    { route: 'privacy',  path: '/privacy/', title: 'Privacy Policy – Brain', desc: 'Your study material never leaves your device. No analytics, no trackers, no account database. What can leave your device, only by your action.', nav: null },
+    { route: 'refund',   path: '/refund/', title: 'Refund & Cancellation Policy – Brain', desc: 'Cancel in one click anytime and keep access until your paid period ends. 7-day free trial with no card. All sales final except our own billing errors.', nav: null },
 ];
 
 // ---------------------------------------------------------------------------
@@ -230,6 +285,7 @@ function render({ content, title, desc, url, robots, ogType, ogExtra, jsonld, na
     sub('{{A_FAQ}}', tokens.A_FAQ);
     sub('{{A_BLOG}}', tokens.A_BLOG);
     sub('{{SOCIAL_LINKS}}', SOCIAL_LINKS_HTML);
+    sub('{{SOCIAL_HEAD}}', SOCIAL_HEAD_HTML);
     if (/\{\{[A-Z_]+\}\}/.test(html)) fail('unreplaced placeholder in output for ' + url);
     return html;
 }
@@ -245,7 +301,8 @@ function buildStaticPages() {
             content: read(fragPath),
             title: p.title, desc: p.desc, url: SITE + p.path,
             robots: 'index, follow, max-image-preview:large',
-            ogType: 'website', jsonld: p.jsonld, nav: p.nav,
+            ogType: 'website',
+            jsonld: pageJsonld(SITE + p.path, p.title, p.desc, { extra: p.extraNodes }), nav: p.nav,
         });
         const outPath = p.route === 'home' ? 'index.html' : p.path.replace(/^\//, '').replace(/\/$/, '') + '/index.html';
         write(outPath, html);
@@ -265,19 +322,23 @@ function buildBlog(posts) {
         '                <div class="post-excerpt">' + esc(p.excerpt) + '</div>\n' +
         '            </li>').join('\n');
 
-    const blogJsonld = `<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Blog",
-      "name": "Brain Blog",
-      "url": "https://try4ever.com/blog/",
-      "description": "Notes on studying, memory and building Brain – a 3D knowledge map tool for students.",
-      "publisher": { "@id": "https://try4ever.com/#org" },
-      "blogPost": [
-${posts.map(p => '        { "@type": "BlogPosting", "headline": ' + JSON.stringify(p.title) + ', "url": "' + SITE + '/blog/' + p.slug + '/", "datePublished": "' + p.date + '" }').join(',\n')}
-      ]
-    }
-    </script>`;
+    const blogJsonld = pageJsonld(SITE + '/blog/', 'Blog – Brain Study Tool',
+        'Notes on studying, memory and building Brain – a 3D knowledge map tool for students.',
+        { extra: [{
+            '@type': 'Blog',
+            '@id': SITE + '/blog/#blog',
+            'name': 'Brain Blog',
+            'url': SITE + '/blog/',
+            'description': 'Notes on studying, memory and building Brain – a 3D knowledge map tool for students.',
+            'publisher': { '@id': SITE + '/#org' },
+            'blogPost': posts.map(p => ({
+                '@type': 'BlogPosting',
+                '@id': SITE + '/blog/' + p.slug + '/#blogpost',
+                'headline': p.title,
+                'url': SITE + '/blog/' + p.slug + '/',
+                'datePublished': p.date
+            }))
+        }] });
 
     write('blog/index.html', render({
         content: '<div class="section">\n    <h1 class="page-title">Blog</h1>\n    <p>Notes on studying, memory and building Brain – a 3D knowledge map tool for students.</p>\n    <ul class="post-list">\n' + items + '\n    </ul>\n</div>',
@@ -313,21 +374,25 @@ ${posts.map(p => '        { "@type": "BlogPosting", "headline": ' + JSON.stringi
             (navBits.length ? '    <nav class="post-nav" aria-label="Post navigation">' + navBits.join('') + '</nav>\n' : '') +
             '</div>';
 
-        const jsonld = `<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": ${JSON.stringify(p.title)},
-      "description": ${JSON.stringify(p.excerpt)},
-      "image": "https://try4ever.com/og-image.png",
-      "datePublished": "${p.date}",
-      "dateModified": "${p.date}",
-      "keywords": ${JSON.stringify(p.tags.join(', '))},
-      "author": { "@type": "Organization", "name": "try4ever", "url": "https://try4ever.com/" },
-      "publisher": { "@type": "Organization", "name": "try4ever", "url": "https://try4ever.com/" },
-      "mainEntityOfPage": { "@type": "WebPage", "@id": "${SITE}/blog/${p.slug}/" }
-    }
-    </script>`;
+        const postJsonld = pageJsonld(
+            SITE + '/blog/' + p.slug + '/', p.title + ' – Brain Blog', p.excerpt,
+            {
+                mainEntity: { '@id': SITE + '/blog/' + p.slug + '/#blogpost' },
+                extra: [{
+                    '@type': 'BlogPosting',
+                    '@id': SITE + '/blog/' + p.slug + '/#blogpost',
+                    'headline': p.title,
+                    'description': p.excerpt,
+                    'image': SITE + '/og-image.png',
+                    'datePublished': p.date,
+                    'dateModified': p.date,
+                    'keywords': p.tags.join(', '),
+                    'author': { '@id': SITE + '/#org' },
+                    'publisher': { '@id': SITE + '/#org' },
+                    'isPartOf': { '@id': SITE + '/blog/#blog', 'name': 'Brain Blog' },
+                    'mainEntityOfPage': { '@id': SITE + '/blog/' + p.slug + '/#webpage' }
+                }]
+            });
 
         write('blog/' + p.slug + '/index.html', render({
             content,
@@ -337,7 +402,7 @@ ${posts.map(p => '        { "@type": "BlogPosting", "headline": ' + JSON.stringi
             robots: 'index, follow, max-image-preview:large',
             ogType: 'article',
             ogExtra: '    <meta property="article:published_time" content="' + p.date + '">',
-            jsonld, nav: 'blog',
+            jsonld: postJsonld, nav: 'blog',
         }));
         console.log('  ✓', ('/blog/' + p.slug + '/').padEnd(12), '-> blog/' + p.slug + '/index.html');
     }
@@ -379,7 +444,11 @@ function build404(posts) {
         desc: 'That page does not exist on try4ever.com. Head back home, read the blog, or open the Brain study app.',
         url: '', // no canonical: this is an error page, not a content page
         robots: 'noindex, follow',
-        ogType: 'website', jsonld: '', nav: null,
+        ogType: 'website',
+        // Even the error page carries the full social entity graph (noindex is
+        // kept, so this is identity data for scrapers, never an indexable page).
+        jsonld: pageJsonld(SITE + '/404.html', 'Page not found (404) – Brain',
+            'That page does not exist on try4ever.com. Head back home, read the blog, or open the Brain study app.'), nav: null,
     }));
     console.log('  ✓', '/<unknown> '.padEnd(12), '-> 404.html (smart recovery, served with HTTP 404, site index: ' + siteIndex.length + ' entries)');
 }
